@@ -1,0 +1,37 @@
+/* init styles */
+:root {
+    --border-radius: 0.375rem;
+    --bs-btn-color: #fff;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-size: 16px;
+    line-height: 1.5;
+    text-rendering: optimizeSpeed;
+}
+
+/* login register form */
+.auth-container{
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.login-form{
+  max-width: 500px;
+  width: 500px;
+  padding: 50px;
+  background-color: #EDF1D6;
+  border-radius: var(--border-radius);
+}

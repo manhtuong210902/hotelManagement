@@ -1,0 +1,17 @@
+POST http://localhost:5001/api/user/register
+Content-Type: application/json
+
+{
+    "email" : "mtuong669@gmail.com",
+    "fullname": "Mạnh Tường",
+    "password": "123456"
+}
+
+###
+POST http://localhost:5001/api/user/login 
+Content-Type: application/json
+
+{
+    "email" : "mtuong669@gmail.com",
+    "password" : "123456"
+}
