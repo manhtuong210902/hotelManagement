@@ -1,0 +1,14 @@
+const express = require("express");
+const router = express.Router();
+//
+const authenToken = require("../middlewares/auth");
+const roomController = require("../controllers/room.c");
+
+router.get("/", roomController.getFull);
+router.post("/add", authenToken, roomController.add);
+router.get("/:id", authenToken, roomController.getById);
+
+router.delete("/:id", authenToken, roomController.delete);
+router.put("/:id", authenToken, roomController.update);
+
+module.exports = router;

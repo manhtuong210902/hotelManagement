@@ -1,12 +1,12 @@
 import Sidebar from "../components/Sidebar/Sidebar";
 
-function StaffLayout({ children }) {
+function ManagerLayout({ children }) {
     return (
         <div className="d-flex">
             <Sidebar />
-            <div>{children}</div>
+            <div className="manage-content">{children}</div>
         </div>
     );
 }
 
-export default StaffLayout;
+export default ManagerLayout;

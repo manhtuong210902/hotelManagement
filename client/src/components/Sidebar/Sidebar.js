@@ -22,13 +22,15 @@ function Sidebar() {
                     <h5>Mạnh Tường</h5>
                     <span>Quản lý khách sạn</span>
                 </div>
-                <li class="border-top my-3"></li>
+                <li className="border-top my-3"></li>
                 <Accordion defaultActiveKey={["0"]} alwaysOpen className="mb-2">
                     <Accordion.Item eventKey="0">
                         <Accordion.Header>Quản lý đặt phòng</Accordion.Header>
                         <Accordion.Body>
                             <ListGroup>
-                                <ListGroup.Item active>Thêm đặt phòng</ListGroup.Item>
+                                <Link to={config.routes.addroom}>
+                                    <ListGroup.Item active>Thêm phòng</ListGroup.Item>
+                                </Link>
                                 <ListGroup.Item>Xem đơn đặt phòng</ListGroup.Item>
                                 <ListGroup.Item>Chỉnh sửa đặt phòng</ListGroup.Item>
                             </ListGroup>
@@ -41,9 +43,15 @@ function Sidebar() {
                         <Accordion.Header>Quản lý phòng</Accordion.Header>
                         <Accordion.Body>
                             <ListGroup>
-                                <ListGroup.Item active>Thêm phòng</ListGroup.Item>
-                                <ListGroup.Item>Xem danh sách phòng</ListGroup.Item>
-                                <ListGroup.Item>Chỉnh sửa phòng</ListGroup.Item>
+                                <Link to={config.routes.addroom}>
+                                    <ListGroup.Item active>Thêm phòng</ListGroup.Item>
+                                </Link>
+                                <Link to={config.routes.listroom}>
+                                    <ListGroup.Item>Danh sách phòng</ListGroup.Item>
+                                </Link>
+                                <Link to={config.routes.editroom}>
+                                    <ListGroup.Item>Chỉnh sửa phòng</ListGroup.Item>
+                                </Link>
                             </ListGroup>
                         </Accordion.Body>
                     </Accordion.Item>
