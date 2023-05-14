@@ -8,6 +8,10 @@ import ManagerLayout from "../layouts/ManagerLayout";
 import AddRoom from "../pages/AddRoom/AddRoom";
 import ListRoom from "../pages/ListRoom/ListRoom";
 import UpdateRoom from "../pages/UpdateRoom/UpdateRoom";
+import CustomerLayout from "../layouts/CustomerLayout";
+import Rooms from "../pages/Rooms/Rooms";
+import Search from "../pages/Search/Search";
+import Details from "../pages/Details/Details";
 
 //public routes
 const publicRoutes = [
@@ -16,7 +20,12 @@ const publicRoutes = [
 ];
 
 // //customer routes
-const customerRoutes = [{ path: config.routes.home, component: Home, layout: ManagerLayout }];
+const customerRoutes = [
+    { path: config.routes.home, component: Home, layout: CustomerLayout },
+    { path: config.routes.rooms, component: Rooms, layout: CustomerLayout },
+    { path: config.routes.search, component: Search, layout: CustomerLayout },
+    { path: config.routes.detail, component: Details, layout: CustomerLayout },
+];
 
 //staff routes
 const managerRoutes = [

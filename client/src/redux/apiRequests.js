@@ -26,7 +26,7 @@ export const loaderUser = async (dispatch) => {
 //login user
 export const loginUser = async (userData, dispatch) => {
     try {
-        const res = await axios.room(`${API_URL}/user/login`, userData);
+        const res = await axios.post(`${API_URL}/user/login`, userData);
         if (res.data.success) {
             localStorage.setItem(LOCAL_STORAGE_TOKEN_NAME, res.data.accessToken);
         }
@@ -35,14 +35,14 @@ export const loginUser = async (userData, dispatch) => {
         await loaderUser(dispatch);
         return res.data;
     } catch (error) {
-        return error.response.data;
+        console.log(error);
     }
 };
 
 //register user
 export const registerUser = async (userData) => {
     try {
-        const res = await axios.room(`${API_URL}/user/register`, userData);
+        const res = await axios.post(`${API_URL}/user/register`, userData);
         if (res.data.success) {
             return res.data;
         }

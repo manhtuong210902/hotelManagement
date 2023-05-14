@@ -116,6 +116,31 @@ class roomController {
             });
         }
     }
+
+    //@route [GET] :api/rooms/search?q
+    //@desc: search room
+    //@access private
+    async searchRoom(req, res, next) {
+        try {
+            const { q } = req.query;
+            const regex = new RegExp(q, "i");
+
+            const rooms = await Room.find({
+                $or: [{ name: regex }, { number: regex }, { type: regex }, { description: regex }],
+            });
+
+            return res.json({
+                success: true,
+                rooms,
+            });
+        } catch (error) {
+            console.log(error);
+            return res.status(500).json({
+                success: false,
+                message: "Internal server error",
+            });
+        }
+    }
 }
 
 module.exports = new roomController();

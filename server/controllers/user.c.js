@@ -23,11 +23,12 @@ class userController {
         }
     }
 
-    //@route [POST] :/api/auth/login
+    //@route [POST] :/api/user/login
     //@desc login user
     //@access public
     async login(req, res, next) {
         const { email, password } = req.body;
+        console.log(req.body);
         try {
             const user = await User.findOne({ email });
             if (!user) {

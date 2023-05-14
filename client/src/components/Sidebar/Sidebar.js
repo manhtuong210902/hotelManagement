@@ -1,8 +1,32 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import config from "../../config";
-import { Accordion, ListGroup } from "react-bootstrap";
+import { Accordion, Button, ListGroup } from "react-bootstrap";
+import { useDispatch } from "react-redux";
+import { logoutUser } from "../../redux/apiRequests";
+import { BoxArrowRight } from "react-bootstrap-icons";
 
 function Sidebar() {
+    const dispatch = useDispatch();
+    const roomManagamentList = [
+        {
+            id: 1,
+            name: "Thêm phòng",
+            path: config.routes.addroom,
+        },
+        {
+            id: 2,
+            name: "Danh sách phòng",
+            path: config.routes.listroom,
+        },
+        {
+            id: 3,
+            name: "Chỉnh sửa phòng",
+            path: config.routes.editroom,
+        },
+    ];
+
+    const location = useLocation();
+
     return (
         <div
             className="flex-shrink-0 p-3 bg-light"
@@ -18,9 +42,17 @@ function Sidebar() {
                 <span className="fs-5 fw-semibold text-dark">Hotel HCMUS</span>
             </Link>
             <ul className="list-unstyled ps-0">
-                <div className="text-center">
+                <div className="d-flex align-items-center gap-1 flex-column">
                     <h5>Mạnh Tường</h5>
                     <span>Quản lý khách sạn</span>
+                    <Button
+                        className="d-flex align-items-center gap-2 justify-content-center mt-3 mb-2"
+                        onClick={() => {
+                            logoutUser(dispatch);
+                        }}
+                    >
+                        <BoxArrowRight /> Đăng xuất
+                    </Button>
                 </div>
                 <li className="border-top my-3"></li>
                 <Accordion defaultActiveKey={["0"]} alwaysOpen className="mb-2">
@@ -28,9 +60,6 @@ function Sidebar() {
                         <Accordion.Header>Quản lý đặt phòng</Accordion.Header>
                         <Accordion.Body>
                             <ListGroup>
-                                <Link to={config.routes.addroom}>
-                                    <ListGroup.Item active>Thêm phòng</ListGroup.Item>
-                                </Link>
                                 <ListGroup.Item>Xem đơn đặt phòng</ListGroup.Item>
                                 <ListGroup.Item>Chỉnh sửa đặt phòng</ListGroup.Item>
                             </ListGroup>
@@ -43,15 +72,15 @@ function Sidebar() {
                         <Accordion.Header>Quản lý phòng</Accordion.Header>
                         <Accordion.Body>
                             <ListGroup>
-                                <Link to={config.routes.addroom}>
-                                    <ListGroup.Item active>Thêm phòng</ListGroup.Item>
-                                </Link>
-                                <Link to={config.routes.listroom}>
-                                    <ListGroup.Item>Danh sách phòng</ListGroup.Item>
-                                </Link>
-                                <Link to={config.routes.editroom}>
-                                    <ListGroup.Item>Chỉnh sửa phòng</ListGroup.Item>
-                                </Link>
+                                {roomManagamentList.map((item) => {
+                                    return (
+                                        <Link to={item.path} key={item.id} className="sidebar-item">
+                                            <ListGroup.Item active={location.pathname === item.path}>
+                                                {item.name}
+                                            </ListGroup.Item>
+                                        </Link>
+                                    );
+                                })}
                             </ListGroup>
                         </Accordion.Body>
                     </Accordion.Item>
