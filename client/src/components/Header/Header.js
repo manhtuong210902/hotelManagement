@@ -16,7 +16,7 @@ function Header() {
                 <Navbar.Toggle aria-controls="responsive-navbar-nav" />
                 <Navbar.Collapse id="responsive-navbar-nav">
                     <Nav className="me-auto">
-                        <Link className="text-decoration-none">
+                        <Link className="text-decoration-none" to={config.routes.home}>
                             <div className="nav-link">Trang chủ</div>
                         </Link>
                         <Link className="text-decoration-none" to={config.routes.rooms}>

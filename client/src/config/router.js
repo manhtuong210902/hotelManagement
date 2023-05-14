@@ -4,7 +4,7 @@ const routes = {
     login: "/login",
     register: "/register",
     search: "/search/:query",
-    detail: "/details",
+    detail: "/details/:id",
     manager: "/manager",
     addroom: "/manager/addroom",
     editroom: "/manager/editroom",

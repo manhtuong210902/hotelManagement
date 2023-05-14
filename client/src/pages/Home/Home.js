@@ -1,5 +1,13 @@
+import Banner from "../../components/Banner/Banner";
+import GridRoom from "../../components/Rooms/GridRoom";
+
 function Home() {
-    return <h1>Home Page</h1>;
+    return (
+        <>
+            <Banner />
+            <GridRoom />
+        </>
+    );
 }
 
 export default Home;

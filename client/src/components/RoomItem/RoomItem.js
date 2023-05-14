@@ -17,7 +17,7 @@ function RoomItem({ data }) {
 
                     <div className="text-center mt-3">
                         <h5 className="mb-3 text-danger">Giá: {data.price.toLocaleString("vi-VN")}đ/đêm</h5>
-                        <Link className="btn btn-primary text-decoration-none" to={"/details"}>
+                        <Link className="btn btn-primary text-decoration-none" to={`/details/${data._id}`}>
                             Xem thông tin
                         </Link>
                     </div>
