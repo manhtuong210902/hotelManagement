@@ -12,6 +12,7 @@ import CustomerLayout from "../layouts/CustomerLayout";
 import Rooms from "../pages/Rooms/Rooms";
 import Search from "../pages/Search/Search";
 import Details from "../pages/Details/Details";
+import ProfileCus from "../pages/ProfileCus/ProfileCus";
 
 //public routes
 const publicRoutes = [
@@ -25,6 +26,7 @@ const customerRoutes = [
     { path: config.routes.rooms, component: Rooms, layout: CustomerLayout },
     { path: config.routes.search, component: Search, layout: CustomerLayout },
     { path: config.routes.detail, component: Details, layout: CustomerLayout },
+    { path: config.routes.profile, component: ProfileCus, layout: CustomerLayout },
 ];
 
 //staff routes

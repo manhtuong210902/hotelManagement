@@ -12,7 +12,9 @@ function Header() {
     return (
         <Navbar collapseOnSelect expand="lg" bg="light" variant="light" className="header">
             <Container>
-                <Navbar.Brand href="#">HOTEL HCMUS</Navbar.Brand>
+                <Navbar.Brand href="#" className="fw-bold text-primary">
+                    ÚKS
+                </Navbar.Brand>
                 <Navbar.Toggle aria-controls="responsive-navbar-nav" />
                 <Navbar.Collapse id="responsive-navbar-nav">
                     <Nav className="me-auto">
@@ -31,7 +33,9 @@ function Header() {
                         </NavDropdown> */}
                     </Nav>
                     <Nav className="d-flex align-items-center gap-2">
-                        <Nav.Link>Chào, {user.fullname}</Nav.Link>
+                        <div className="nav-link">
+                            Chào, <Link to={config.routes.profile}>{user.fullname}</Link>
+                        </div>
                         <Button
                             className="d-flex align-items-center gap-2 justify-content-center"
                             onClick={() => {

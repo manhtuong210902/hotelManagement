@@ -31,7 +31,7 @@ function LoginForm() {
     };
 
     return (
-        <div className="text-center login-form">
+        <div className="text-center login-form bg-light">
             <div className="mb-4">
                 <h3>Đăng nhập</h3>
                 <p>Đăng nhập để cùng đặt phòng nào</p>
@@ -82,7 +82,7 @@ function LoginForm() {
                         </InputGroup>
                     </Form.Group>
 
-                    <Button type="submit" variant="primary">
+                    <Button type="submit" variant="primary" className="text-white">
                         Đăng nhập
                     </Button>
                 </Form>

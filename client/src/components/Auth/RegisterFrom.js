@@ -29,7 +29,7 @@ function RegisterForm() {
     };
 
     return (
-        <div className="text-center login-form">
+        <div className="text-center login-form bg-light">
             <div className="mb-4">
                 <h3>Đăng kí</h3>
                 <p>Đăng kí với Hotel HCMUS</p>

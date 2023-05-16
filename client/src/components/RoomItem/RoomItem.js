@@ -1,4 +1,4 @@
-import { Button, Card, Col } from "react-bootstrap";
+import { Card, Col } from "react-bootstrap";
 import { Link } from "react-router-dom";
 
 function RoomItem({ data }) {

@@ -82,7 +82,7 @@ function RoomDetails() {
                 <Col lg={4} className="mb-3">
                     <div className="p-3 border border-1 rounded-2">
                         <div>
-                            <h6 className="mb-4 text-primary">THÔNG TIN NGƯỜI ĐẶT</h6>
+                            <h6 className="mb-4 text-primary">THÔNG TIN KHÁCH HÀNG</h6>
                             <p>
                                 {"> "}
                                 <strong>Người đặt</strong>: {user.fullname}
@@ -93,7 +93,7 @@ function RoomDetails() {
                             </p>
                         </div>
                         <div className="mt-4">
-                            <h6 className="mb-4 text-primary">THÔNG TIN ĐẶT</h6>
+                            <h6 className="mb-4 text-primary">CHI TIẾT</h6>
                             <form>
                                 <p>
                                     {"> "}

@@ -58,6 +58,17 @@ export const logoutUser = (dispatch) => {
     dispatch(loadUserFail());
 };
 
+//update user
+export const updateUser = async (options, dispatch) => {
+    try {
+        const res = await axios.put(`${API_URL}/user/update`, options);
+        await loaderUser(dispatch);
+        return res.data;
+    } catch (error) {
+        console.log(error);
+    }
+};
+
 //room
 //get full rooms
 export const getFullRooms = async (dispatch) => {

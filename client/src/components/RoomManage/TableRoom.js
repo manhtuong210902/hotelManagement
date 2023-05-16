@@ -75,8 +75,8 @@ function TableRoom() {
                                     <td>{room.number}</td>
                                     <td>{room.name}</td>
                                     <td>{room.type}</td>
-                                    <td>{room.capacity}</td>
-                                    <td>{room.price}</td>
+                                    <td>{room.capacity} người</td>
+                                    <td>{room.price.toLocaleString("vi-VN")}đ/ngày</td>
                                     <td>{formatDate(room.createdAt)}</td>
                                     <td className="d-flex gap-2">
                                         <Button

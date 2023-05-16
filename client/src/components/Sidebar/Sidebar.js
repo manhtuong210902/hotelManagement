@@ -1,7 +1,7 @@
 import { Link, useLocation } from "react-router-dom";
 import config from "../../config";
 import { Accordion, Button, ListGroup } from "react-bootstrap";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { logoutUser } from "../../redux/apiRequests";
 import { BoxArrowRight } from "react-bootstrap-icons";
 
@@ -26,6 +26,7 @@ function Sidebar() {
     ];
 
     const location = useLocation();
+    const user = useSelector((state) => state.auth.user);
 
     return (
         <div
@@ -39,11 +40,11 @@ function Sidebar() {
                 to={config.routes.manager}
                 className="d-flex align-items-center pb-3 mb-3 text-decoration-none border-bottom"
             >
-                <span className="fs-5 fw-semibold text-dark">Hotel HCMUS</span>
+                <span className="fs-5 fw-bold text-primary">ÚKS</span>
             </Link>
             <ul className="list-unstyled ps-0">
                 <div className="d-flex align-items-center gap-1 flex-column">
-                    <h5>Mạnh Tường</h5>
+                    <h5>{user.fullname}</h5>
                     <span>Quản lý khách sạn</span>
                     <Button
                         className="d-flex align-items-center gap-2 justify-content-center mt-3 mb-2"
@@ -60,6 +61,7 @@ function Sidebar() {
                         <Accordion.Header>Quản lý đặt phòng</Accordion.Header>
                         <Accordion.Body>
                             <ListGroup>
+                                <ListGroup.Item>Thêm đặt phòng</ListGroup.Item>
                                 <ListGroup.Item>Xem đơn đặt phòng</ListGroup.Item>
                                 <ListGroup.Item>Chỉnh sửa đặt phòng</ListGroup.Item>
                             </ListGroup>

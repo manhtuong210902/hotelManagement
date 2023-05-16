@@ -3,6 +3,7 @@ const routes = {
     rooms: "/rooms",
     login: "/login",
     register: "/register",
+    profile: "/profile",
     search: "/search/:query",
     detail: "/details/:id",
     manager: "/manager",

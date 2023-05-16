@@ -95,6 +95,24 @@ class userController {
             res.status(500).json({ success: false, message: "Internal server error" });
         }
     }
+
+    //@route [PUT] :/api/user/update
+    async update(req, res, next) {
+        const options = req.body;
+        try {
+            const userUpdate = await User.updateOne({ _id: req.userId }, options);
+            return res.json({
+                success: true,
+                message: "update successfully",
+                userUpdate,
+            });
+        } catch (error) {
+            return res.status(500).json({
+                success: false,
+                message: "Internal server error",
+            });
+        }
+    }
 }
 
 module.exports = new userController();

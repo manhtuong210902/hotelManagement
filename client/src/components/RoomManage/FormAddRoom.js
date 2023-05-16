@@ -3,6 +3,7 @@ import { Form, Button, Row, Col, Spinner } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { addRoom } from "../../redux/apiRequests";
+import InputMask from "react-input-mask";
 
 function FormAddRoom() {
     const dispatch = useDispatch();
@@ -17,7 +18,8 @@ function FormAddRoom() {
     const onSubmit = async (data) => {
         try {
             setLoading(true);
-            await addRoom(data, dispatch);
+            const roomData = { ...data, price: data.price.replace(/\s+/g, "") };
+            await addRoom(roomData, dispatch);
         } catch (error) {
             console.log(error);
         } finally {
@@ -80,8 +82,10 @@ function FormAddRoom() {
 
                 <Form.Group as={Col}>
                     <Form.Label>Đơn giá theo ngày</Form.Label>
-                    <Form.Control
-                        type="text"
+                    <InputMask
+                        mask="999 999 999 999"
+                        maskChar=" "
+                        className="form-control"
                         placeholder="Nhập giá phòng"
                         {...register("price", {
                             required: true,
