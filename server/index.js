@@ -3,7 +3,12 @@ const cors = require("cors");
 const db = require("./config/db");
 const dotenv = require("dotenv");
 const routes = require("./routes");
+const http = require("http");
+const { Server } = require("socket.io");
+
 const app = express();
+const server = http.createServer(app);
+const io = new Server(server);
 
 dotenv.config();
 
@@ -26,10 +31,23 @@ app.use(
 //connect to database
 db.connnect();
 
+io.on("connection", (socket) => {
+    console.log("a user connected ", socket.id);
+
+    socket.on("disconnect", () => {
+        console.log("user disconnected ", socket.id);
+    });
+
+    socket.on("message", (message) => {
+        console.log(message);
+        io.emit("message", message);
+    });
+});
+
 const PORT = 5001;
 
 routes(app);
 
-app.listen(PORT, () => {
+server.listen(PORT, () => {
     console.log(`Server running`);
 });

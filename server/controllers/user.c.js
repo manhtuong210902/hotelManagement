@@ -1,6 +1,8 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const User = require("../models/user.m");
+const chat = require("../models/chat.m");
+const Message = require("../models/message.m");
 
 class userController {
     //route [GET] :/api/auth
@@ -84,7 +86,25 @@ class userController {
                 password: hashedPassword,
             });
 
+            const chatUser = new chat({
+                customer: newUser._id,
+            });
+
+            newUser.roles.push("User");
             await newUser.save();
+
+            const newMessage = new Message({
+                idChat: chatUser._id,
+                content: "Chào bạn, tôi có thể giúp gì cho bạn",
+                role: true,
+            });
+
+            await newMessage.save();
+
+            chatUser.messages.push(newMessage._id);
+            chatUser.lastMessage = newMessage._id;
+
+            await chatUser.save();
 
             return res.json({
                 success: true,
@@ -107,6 +127,27 @@ class userController {
                 userUpdate,
             });
         } catch (error) {
+            return res.status(500).json({
+                success: false,
+                message: "Internal server error",
+            });
+        }
+    }
+
+    //@desc search user by name and email
+    //@access private
+    async searchUser(req, res, next) {
+        try {
+            const { q } = req.query;
+            const regex = new RegExp(q, "i"); // create a regular expression that matches the search query, case-insensitive
+            const users = await User.find({ $or: [{ fullname: regex }, { email: regex }], _id: { $ne: req.userId } }); // find all users whose name or email matches the search query
+
+            return res.json({
+                success: true,
+                users,
+            });
+        } catch (error) {
+            console.log(error);
             return res.status(500).json({
                 success: false,
                 message: "Internal server error",

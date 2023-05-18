@@ -1,5 +1,6 @@
 import { Col, Container, Row } from "react-bootstrap";
 import Profile from "../../components/Profile/Profile";
+import ChatManager from "../../components/Chats/ChatManager";
 
 function Manage() {
     return (
@@ -9,7 +10,9 @@ function Manage() {
                     <Col lg={4}>
                         <Profile />
                     </Col>
-                    <Col lg={8}>Chat</Col>
+                    <Col lg={8}>
+                        <ChatManager />
+                    </Col>
                 </Row>
             </Container>
         </div>
