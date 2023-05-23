@@ -3,6 +3,7 @@ const router = express.Router();
 //
 const authenToken = require("../middlewares/auth");
 const roomController = require("../controllers/room.c");
+const billController = require("../controllers/rental.c");
 
 router.get("/", roomController.getFull);
 router.post("/add", authenToken, roomController.add);
@@ -12,4 +13,6 @@ router.get("/:id", authenToken, roomController.getById);
 router.delete("/:id", authenToken, roomController.delete);
 router.put("/:id", authenToken, roomController.update);
 
+//booking
+router.post("/create-rental-card", authenToken, billController.createRentalCard);
 module.exports = router;

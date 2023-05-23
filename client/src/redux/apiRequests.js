@@ -2,8 +2,7 @@ import axios from "axios";
 import { API_URL, LOCAL_STORAGE_TOKEN_NAME } from "../utils/constants";
 import setAuthToken from "../utils/setAuthToken";
 import { loadUserFail, loadUserSuccess } from "./authSlice";
-import { addroom, deleteroom, loadroomFail, loadroomSuccess, updateroom } from "./roomSlice";
-
+import { addroom, deleteroom, loadroomFail, loadroomSuccess, updateroom, addRentalCard } from "./roomSlice";
 //loader user
 export const loaderUser = async (dispatch) => {
     if (localStorage[LOCAL_STORAGE_TOKEN_NAME]) {
@@ -121,3 +120,35 @@ export const updateRoom = async (roomId, room, dispatch) => {
         console.log(error);
     }
 };
+
+
+//booking
+export const createRentalCard =  async (dispatch, rentalObj) => {
+    try {
+        const storedValue = localStorage.getItem('hotel_token');
+        
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${storedValue}`,
+        },
+      };
+  
+      const {data} = await axios.post(
+        `${API_URL}/rooms/create-rental-card`,
+        rentalObj,
+        {
+            withCredentials: true,
+            headers: config
+          },
+        
+      );
+
+    if(data.status === 'success'){
+        dispatch(addRentalCard(data.newBill));
+        return data.success
+    }
+    } catch (err) {
+        console.log(err);
+    }
+  };

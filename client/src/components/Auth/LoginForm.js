@@ -30,6 +30,7 @@ function LoginForm() {
         navigate(from, { replace: true });
     };
 
+
     return (
         <div className="text-center login-form bg-light">
             <div className="mb-4">

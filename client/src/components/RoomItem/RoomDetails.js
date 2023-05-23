@@ -1,16 +1,38 @@
-import { Button, Card, Col, Container, Row, Spinner, Tab, Tabs } from "react-bootstrap";
+import { Button, Card, Col, Container, Row, Spinner, Tab, Tabs, Modal } from "react-bootstrap";
 import FormSearch from "../Rooms/FromSearch";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { API_URL } from "../../utils/constants";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { createRentalCard } from "../../redux/apiRequests";
 
 function RoomDetails() {
     const { id } = useParams();
     const [loading, setLoading] = useState(false);
     const [room, setRoom] = useState(null);
+    const [initialDate, setInitialDate] = useState('');
     const user = useSelector((state) => state.auth.user);
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+    //modal
+    const [show, setShow] = useState(false);
+
+    const handleClose = () => setShow(false);
+    
+    const [bookingInfo, setBookingInfo] = useState({
+        booker: user._id,
+        unitPrice: 0,
+        extraPrice: 0,
+        totalPrice: 0,
+        arrivalDate: '',
+        numDays: 1,
+        paymentMethod: null,
+        paymentResult: null,
+        isPaid: false,
+        paidAt: null,
+    })
+
     useEffect(() => {
         setLoading(true);
         const fetchApi = async () => {
@@ -18,11 +40,31 @@ function RoomDetails() {
             const result = await axios.get(`${API_URL}/rooms/${id}`);
             setLoading(false);
             setRoom(result.data.room);
+            const currentDate = new Date();
+            const formattedDate = currentDate.toISOString().substr(0, 10);
+            setInitialDate(formattedDate);
+            setBookingInfo({
+                            ...bookingInfo, 
+                            unitPrice: result.data.room.price,
+                            extraPrice: result.data.room.price*0.1,
+                            totalPrice: result.data.room.price*bookingInfo.numDays + result.data.room.price*0.1,
+                            arrivalDate: formattedDate
+                        })
+
         };
         fetchApi();
     }, [id]);
 
+    const calTotalPrice = (value, num) =>  value.extraPrice + num*value.unitPrice
+    const handleBooking = () => {
+        const success = createRentalCard(dispatch, bookingInfo )
+        if(success){
+            navigate('/')
+        }
+        setShow(false);
+    }
     return (
+        <>
         <Container className="p-5">
             <Row>
                 <h4>Thông tin phòng</h4>
@@ -97,8 +139,29 @@ function RoomDetails() {
                             <form>
                                 <p>
                                     {"> "}
-                                    <strong>Ngày thuê</strong>: <input type="date" />
+                                    <strong>Ngày thuê</strong>: 
+                                    <input 
+                                        type="date" 
+                                        value={initialDate} 
+                                        onChange={(e) => { 
+                                            setInitialDate(e.target.value) 
+                                            setBookingInfo({...bookingInfo, arrivalDate: e.target.value})
+                                        }}/>
                                 </p>
+                                <p className="d-flex align-items-center">
+                                    <label className="me-2" >
+                                        {"> "}
+                                        <strong>Số ngày thuê phòng</strong>
+                                    </label>
+                                    <input
+                                        type="number"
+                                        min={1}
+                                        value={bookingInfo.numDays}
+                                        className="form-control w-25"
+                                        onChange={(e) => setBookingInfo(e.target.value ?{...bookingInfo, numDays: parseInt(e.target.value), totalPrice: calTotalPrice(bookingInfo, e.target.value)}:1)}
+                                    ></input>
+                                </p>
+                                
                                 <p>
                                     {"> "}
                                     <strong>Đơn giá phòng</strong>: {room && room.price.toLocaleString("vi-VN")}đ/ngày
@@ -109,9 +172,9 @@ function RoomDetails() {
                                 </p>
                                 <div className="border-top pt-3 pb-2">
                                     <p className="mb-3 text-danger">
-                                        <strong>THÀNH TIỀN 100.000đ</strong>
+                                        <strong>THÀNH TIỀN {bookingInfo.totalPrice}</strong>
                                     </p>
-                                    <Button className="w-100">ĐẶT PHÒNG</Button>
+                                    <Button onClick={() => setShow(true)} className="w-100">ĐẶT PHÒNG</Button>
                                 </div>
                             </form>
                         </div>
@@ -119,6 +182,22 @@ function RoomDetails() {
                 </Col>
             </Row>
         </Container>
+        
+        <Modal show={show} onHide={handleClose} animation={false}>
+            <Modal.Header closeButton>
+                <Modal.Title>ĐẶT PHÒNG</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>Bạn có chắc muốn đặt phòng này</Modal.Body>
+            <Modal.Footer>
+                <Button variant="secondary" onClick={handleClose}>
+                    Đóng
+                </Button>
+                <Button variant="primary" onClick={handleBooking}>
+                    Đặt phòng
+                </Button>
+            </Modal.Footer>
+      </Modal>
+        </>
     );
 }
 

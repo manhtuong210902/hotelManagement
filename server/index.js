@@ -17,11 +17,17 @@ app.use(
 app.use(express.json());
 
 //to comunicate with front-end
-app.use(
-    cors({
-        origin: "http://localhost:3000",
-    })
-);
+const corsOptions ={
+    origin: process.env.BASE_URL, 
+    credentials:true,            
+    optionSuccessStatus:200
+  }
+app.use(cors(corsOptions))
+// app.use(
+//     cors({
+//         origin: "http://localhost:3000",
+//     })
+// );
 
 //connect to database
 db.connnect();
