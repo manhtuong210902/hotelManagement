@@ -16,6 +16,14 @@ body {
     text-rendering: optimizeSpeed;
 }
 
+button,
+input,
+[tabindex] {
+    outline: none;
+    border: none;
+    border-radius: var(--border-radius);
+}
+
 /* login register form */
 .auth-container{
   position: fixed;
@@ -198,4 +206,34 @@ to {
   p {
     margin-bottom: 0;
 }
+}
+
+//chat manager
+.user-chat-item{
+  width: 250px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  cursor: pointer;
+  span{
+    font-size: 14px;
+  }
+}
+
+.search-user{
+  width: 250px;
+}
+
+.chat-manager{
+  flex: 1;
+}
+
+.chat-manager-header{
+  padding: 8px 18px;
+  border-top-left-radius: var(--border-radius);
+  border-top-right-radius: var(--border-radius);
+}
+
+.chat-customer-list-message.manager{
+  height: 450px;
 }
