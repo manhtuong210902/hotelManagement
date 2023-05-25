@@ -10,6 +10,7 @@ const routes = {
     addroom: "/manager/addroom",
     editroom: "/manager/editroom",
     listroom: "/manager/listroom",
+    pay: "/pay",
 };
 
 export default routes;

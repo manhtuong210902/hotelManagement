@@ -1,5 +1,5 @@
 const Bill = require("../models/bill.m");
-
+const {createOrder, capturePayment} = require("../paypal-api")
 class billController {
 
     async createRentalCard(req, res, next) {
@@ -19,6 +19,26 @@ class billController {
             });
         }
     }
+
+    async createPaypalOrder(req, res)  {
+        try {
+          const order = await createOrder();
+          res.json(order);
+        } catch (err) 
+        {
+          res.status(500).send(err.message);
+        }
+    }
+
+    async capturePaypalOrder(req, res)  {
+        const { orderID } = req.body;
+        try {
+          const captureData = await capturePayment(orderID);
+          res.json(captureData);
+        } catch (err) {
+          res.status(500).send(err.message);
+        }
+      }
 
 }
 

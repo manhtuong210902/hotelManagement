@@ -6,7 +6,7 @@ const roomSlice = createSlice({
         room: null,
         rooms: [],
         roomLoading: true,
-        rentalCard: []
+        rentalCard: null
     },
     reducers: {
         loadroomSuccess: (state, action) => {
@@ -35,7 +35,7 @@ const roomSlice = createSlice({
             });
         },
         addRentalCard: (state, action) => {
-            state.rentalCard.push(action.payload);
+            state.rentalCard = action.payload;
         },
     },
 });

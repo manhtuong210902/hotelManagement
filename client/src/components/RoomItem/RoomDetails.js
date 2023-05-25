@@ -1,4 +1,4 @@
-import { Button, Card, Col, Container, Row, Spinner, Tab, Tabs, Modal } from "react-bootstrap";
+import { Button, Card, Col, Container, Row, Spinner, Tab, Tabs, Modal, Form } from "react-bootstrap";
 import FormSearch from "../Rooms/FromSearch";
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
@@ -6,11 +6,13 @@ import axios from "axios";
 import { API_URL } from "../../utils/constants";
 import { useSelector, useDispatch } from "react-redux";
 import { createRentalCard } from "../../redux/apiRequests";
+import PayPalPayment from "../Payment/PayPalPayment";
 
 function RoomDetails() {
     const { id } = useParams();
     const [loading, setLoading] = useState(false);
     const [room, setRoom] = useState(null);
+    const [payment, setPayment] = useState('off');
     const [initialDate, setInitialDate] = useState('');
     const user = useSelector((state) => state.auth.user);
     const dispatch = useDispatch();
@@ -59,10 +61,13 @@ function RoomDetails() {
     const handleBooking = () => {
         const success = createRentalCard(dispatch, bookingInfo )
         if(success){
-            navigate('/')
+            navigate('/pay')
         }
         setShow(false);
     }
+
+    const handlePayment = e =>  setPayment(e.target.value)
+
     return (
         <>
         <Container className="p-5">
@@ -136,10 +141,10 @@ function RoomDetails() {
                         </div>
                         <div className="mt-4">
                             <h6 className="mb-4 text-primary">CHI TIẾT</h6>
-                            <form>
+                            <div>
                                 <p>
                                     {"> "}
-                                    <strong>Ngày thuê</strong>: 
+                                    <strong >Ngày thuê</strong>: 
                                     <input 
                                         type="date" 
                                         value={initialDate} 
@@ -170,13 +175,44 @@ function RoomDetails() {
                                     {"> "}
                                     <strong>Thuế 10%</strong>: {room && (room.price * 0.1).toLocaleString("vi-VN")}đ
                                 </p>
+
+                                <Form onChange = {handlePayment} >
+                                    <label className="me-2" >
+                                        {"> "}
+                                        <strong>Chọn phương thức thanh toán</strong>
+                                    </label>
+                                    <div key={`inline-radio`} className="m-3">
+                                        <Form.Check
+                                            inline
+                                            label="Thanh toán tiền mặt khi check-in"
+                                            name="group1"
+                                            type="radio"
+                                            id={`inline-radio-1`}
+                                            value="later_money"
+                                        />
+                                        <Form.Check
+                                            inline
+                                            label="Thanh toán online bằng paypal"
+                                            name="group1"
+                                            type="radio"
+                                            id={`inline-radio-2`}
+                                            value="paypal"
+                                        />
+                                    </div>
+                                </Form>
+
                                 <div className="border-top pt-3 pb-2">
                                     <p className="mb-3 text-danger">
                                         <strong>THÀNH TIỀN {bookingInfo.totalPrice}</strong>
                                     </p>
-                                    <Button onClick={() => setShow(true)} className="w-100">ĐẶT PHÒNG</Button>
+                                    {
+                                        payment === 'paypal' ?
+                                        <PayPalPayment />
+                                        :
+                                        <Button onClick={() => setShow(true)} className="w-100">ĐẶT PHÒNG</Button>
+                                    }
                                 </div>
-                            </form>
+                            </div>
                         </div>
                     </div>
                 </Col>

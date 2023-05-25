@@ -144,7 +144,7 @@ export const createRentalCard =  async (dispatch, rentalObj) => {
         
       );
 
-    if(data.status === 'success'){
+    if(data.success){
         dispatch(addRentalCard(data.newBill));
         return data.success
     }

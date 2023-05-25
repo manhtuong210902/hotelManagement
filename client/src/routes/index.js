@@ -13,6 +13,7 @@ import Rooms from "../pages/Rooms/Rooms";
 import Search from "../pages/Search/Search";
 import Details from "../pages/Details/Details";
 import ProfileCus from "../pages/ProfileCus/ProfileCus";
+import Pay from "../pages/Pay"
 
 //public routes
 const publicRoutes = [
@@ -27,6 +28,7 @@ const customerRoutes = [
     { path: config.routes.search, component: Search, layout: CustomerLayout },
     { path: config.routes.detail, component: Details, layout: CustomerLayout },
     { path: config.routes.profile, component: ProfileCus, layout: CustomerLayout },
+    { path: config.routes.pay, component: Pay, layout: CustomerLayout },
 ];
 
 //staff routes
