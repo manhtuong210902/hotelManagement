@@ -25,6 +25,19 @@ function Sidebar() {
         },
     ];
 
+    const employeeManagamentList = [
+        {
+            id: 1,
+            name: "Thêm nhân viên",
+            path: config.routes.addemployee,
+        },
+        {
+            id: 2,
+            name: "Danh sách nhân viên",
+            path: config.routes.listemployee,
+        },
+    ];
+
     const location = useLocation();
     const user = useSelector((state) => state.auth.user);
 
@@ -37,7 +50,7 @@ function Sidebar() {
             }}
         >
             <Link
-                to={config.routes.manager}
+                to={user.isAdmin ? config.routes.admin : config.routes.manager}
                 className="d-flex align-items-center pb-3 mb-3 text-decoration-none border-bottom"
             >
                 <span className="fs-5 fw-bold text-primary">ÚKS</span>
@@ -45,7 +58,7 @@ function Sidebar() {
             <ul className="list-unstyled ps-0">
                 <div className="d-flex align-items-center gap-1 flex-column">
                     <h5>{user.fullname}</h5>
-                    <span>Quản lý khách sạn</span>
+                    <span>{user.isAdmin ? "Admin Hệ Thống" : "Quản lý khách sạn"}</span>
                     <Button
                         className="d-flex align-items-center gap-2 justify-content-center mt-3 mb-2"
                         onClick={() => {
@@ -69,8 +82,8 @@ function Sidebar() {
                     </Accordion.Item>
                 </Accordion>
 
-                <Accordion defaultActiveKey={["0"]} alwaysOpen className="mb-2">
-                    <Accordion.Item eventKey="0">
+                <Accordion className="mb-2">
+                    <Accordion.Item>
                         <Accordion.Header>Quản lý phòng</Accordion.Header>
                         <Accordion.Body>
                             <ListGroup>
@@ -87,6 +100,44 @@ function Sidebar() {
                         </Accordion.Body>
                     </Accordion.Item>
                 </Accordion>
+
+                {user.isAdmin && (
+                    <>
+                        <Accordion className="mb-2">
+                            <Accordion.Item>
+                                <Accordion.Header>Quản lý khách hàng</Accordion.Header>
+                                <Accordion.Body>
+                                    <ListGroup>
+                                        <Link to={config.routes.listcus} className="sidebar-item">
+                                            <ListGroup.Item active={location.pathname === config.routes.listcus}>
+                                                Danh sách khách hàng
+                                            </ListGroup.Item>
+                                        </Link>
+                                    </ListGroup>
+                                </Accordion.Body>
+                            </Accordion.Item>
+                        </Accordion>
+
+                        <Accordion>
+                            <Accordion.Item>
+                                <Accordion.Header>Quản lý nhân viên</Accordion.Header>
+                                <Accordion.Body>
+                                    <ListGroup>
+                                        {employeeManagamentList.map((item) => {
+                                            return (
+                                                <Link to={item.path} key={item.id} className="sidebar-item">
+                                                    <ListGroup.Item active={location.pathname === item.path}>
+                                                        {item.name}
+                                                    </ListGroup.Item>
+                                                </Link>
+                                            );
+                                        })}
+                                    </ListGroup>
+                                </Accordion.Body>
+                            </Accordion.Item>
+                        </Accordion>
+                    </>
+                )}
             </ul>
         </div>
     );

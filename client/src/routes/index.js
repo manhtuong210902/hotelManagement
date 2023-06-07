@@ -13,7 +13,13 @@ import Rooms from "../pages/Rooms/Rooms";
 import Search from "../pages/Search/Search";
 import Details from "../pages/Details/Details";
 import ProfileCus from "../pages/ProfileCus/ProfileCus";
-import Pay from "../pages/Pay"
+import Pay from "../pages/Pay";
+import AdminLayout from "../layouts/AdminLayout";
+import Admin from "../pages/Admin/Admin";
+import ListCus from "../pages/ListCus/ListCus";
+import ListEmployee from "../pages/ListEmployee/ListEmployee";
+import AddEmployee from "../pages/AddEmployee/AddEmployee";
+import UpdateEmployee from "../pages/UpdateEmployee/UpdateEmployee";
 
 //public routes
 const publicRoutes = [
@@ -39,4 +45,13 @@ const managerRoutes = [
     { path: config.routes.editroom, component: UpdateRoom, layout: ManagerLayout },
 ];
 
-export { publicRoutes, customerRoutes, managerRoutes };
+//admin routes
+const adminRoutes = [
+    { path: config.routes.admin, component: Admin, layout: AdminLayout },
+    { path: config.routes.listcus, component: ListCus, layout: AdminLayout },
+    { path: config.routes.listemployee, component: ListEmployee, layout: AdminLayout },
+    { path: config.routes.addemployee, component: AddEmployee, layout: AdminLayout },
+    { path: config.routes.editemployee, component: UpdateEmployee, layout: AdminLayout },
+];
+
+export { publicRoutes, customerRoutes, managerRoutes, adminRoutes };

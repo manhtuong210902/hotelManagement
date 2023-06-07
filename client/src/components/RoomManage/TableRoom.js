@@ -35,7 +35,7 @@ function TableRoom() {
     return (
         <div>
             <div>
-                <p className="fst-italic">Danh sách có tổng cộng 10 phòng</p>
+                <p className="fst-italic">Danh sách có tổng cộng {rooms.length} phòng</p>
                 <Link
                     size="sm"
                     className="btn btn-primary d-flex align-items-center gap-2 justify-content-center mb-4 btn-sm"

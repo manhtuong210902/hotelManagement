@@ -13,6 +13,9 @@ const UserChema = new Schema(
         address: { type: String },
         isManager: { type: Boolean, default: false },
         isAdmin: { type: Boolean, default: false },
+        isEmployee: { type: Boolean, default: false },
+        position: { type: String },
+        cccd: { type: String },
     },
     {
         timestamps: true,
