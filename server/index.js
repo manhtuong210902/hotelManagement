@@ -55,5 +55,5 @@ const PORT = 5001;
 routes(app);
 
 server.listen(PORT, () => {
-    console.log(`Server running`);
+    console.log(`Server running at port ${PORT}`);
 });

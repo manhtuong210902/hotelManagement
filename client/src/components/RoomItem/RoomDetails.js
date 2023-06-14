@@ -5,14 +5,14 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { API_URL } from "../../utils/constants";
 import { useSelector, useDispatch } from "react-redux";
-import { createRentalCard } from "../../redux/apiRequests";
+import { createRentalCard, createBill } from "../../redux/bookingApi";
 import PayPalPayment from "../Payment/PayPalPayment";
 
 function RoomDetails() {
     const { id } = useParams();
     const [loading, setLoading] = useState(false);
     const [room, setRoom] = useState(null);
-    const [payment, setPayment] = useState('off');
+    const [payment, setPayment] = useState('later_money');
     const [initialDate, setInitialDate] = useState('');
     const user = useSelector((state) => state.auth.user);
     const dispatch = useDispatch();
@@ -22,17 +22,23 @@ function RoomDetails() {
 
     const handleClose = () => setShow(false);
     
-    const [bookingInfo, setBookingInfo] = useState({
+    const [rentalCard, setRentalCard] = useState({
+        user: user._id,
         booker: user._id,
+        room: id,
+        arrivalDate: '',
+        numDays: 1,
+    })
+
+    const [bill, setBill] = useState({
+        rentalCard: '',
         unitPrice: 0,
         extraPrice: 0,
         totalPrice: 0,
-        arrivalDate: '',
-        numDays: 1,
-        paymentMethod: null,
-        paymentResult: null,
+        paymentMethod: payment,
+        paymentResult: '',
         isPaid: false,
-        paidAt: null,
+        paidAt: '',
     })
 
     useEffect(() => {
@@ -45,28 +51,52 @@ function RoomDetails() {
             const currentDate = new Date();
             const formattedDate = currentDate.toISOString().substr(0, 10);
             setInitialDate(formattedDate);
-            setBookingInfo({
-                            ...bookingInfo, 
-                            unitPrice: result.data.room.price,
-                            extraPrice: result.data.room.price*0.1,
-                            totalPrice: result.data.room.price*bookingInfo.numDays + result.data.room.price*0.1,
+            setRentalCard({
+                            ...rentalCard, 
                             arrivalDate: formattedDate
                         })
-
+            setBill({
+                ...bill, 
+                unitPrice: result.data.room.price,
+                extraPrice: result.data.room.price*0.1,
+                totalPrice: result.data.room.price*rentalCard.numDays + result.data.room.price*0.1,
+            })
         };
         fetchApi();
     }, [id]);
 
     const calTotalPrice = (value, num) =>  value.extraPrice + num*value.unitPrice
-    const handleBooking = () => {
-        const success = createRentalCard(dispatch, bookingInfo )
-        if(success){
-            navigate('/pay')
-        }
-        setShow(false);
+
+    const handleBooking = async () => {
+        createRentalCard(dispatch, rentalCard )
+        .then((newRental) => {
+            setBill({...bill, rentalCard: newRental._id})
+            const Bill = {...bill, number: id, rentalCard: newRental._id, bill_rental: [newRental]   }
+            console.log(Bill);
+            
+            // createBill(dispatch, Bill )
+            // .then((success) => {
+            //     if(success){
+            //         navigate('/profile')
+            //     }
+            //     else {
+            //         //xoa rental card + show error
+            //         console.log('err');
+            //     }
+            // })
+        })
+        setShow(false);        
     }
 
-    const handlePayment = e =>  setPayment(e.target.value)
+    const handlePayment = e =>  {
+        setPayment(e.target.value)
+        setBill({...bill, paymentMethod: e.target.value})
+    }
+
+    const changeNumOfDay = (num) =>{
+        setRentalCard({...rentalCard, numDays: parseInt(num)})
+        setBill({...bill, totalPrice: calTotalPrice(bill, num)})
+    }
 
     return (
         <>
@@ -150,7 +180,7 @@ function RoomDetails() {
                                         value={initialDate} 
                                         onChange={(e) => { 
                                             setInitialDate(e.target.value) 
-                                            setBookingInfo({...bookingInfo, arrivalDate: e.target.value})
+                                            setRentalCard({...rentalCard, arrivalDate: e.target.value})
                                         }}/>
                                 </p>
                                 <p className="d-flex align-items-center">
@@ -161,9 +191,9 @@ function RoomDetails() {
                                     <input
                                         type="number"
                                         min={1}
-                                        value={bookingInfo.numDays}
+                                        value={rentalCard.numDays}
                                         className="form-control w-25"
-                                        onChange={(e) => setBookingInfo(e.target.value ?{...bookingInfo, numDays: parseInt(e.target.value), totalPrice: calTotalPrice(bookingInfo, e.target.value)}:1)}
+                                        onChange={(e) => changeNumOfDay(parseInt(e.target.value))}
                                     ></input>
                                 </p>
                                 
@@ -203,7 +233,7 @@ function RoomDetails() {
 
                                 <div className="border-top pt-3 pb-2">
                                     <p className="mb-3 text-danger">
-                                        <strong>THÀNH TIỀN {bookingInfo.totalPrice}</strong>
+                                        <strong>THÀNH TIỀN {bill.totalPrice}</strong>
                                     </p>
                                     {
                                         payment === 'paypal' ?

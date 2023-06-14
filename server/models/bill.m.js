@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 
 const BillSchema = new Schema(
     {
-        booker:{
+        rentalCard:{
             type: mongoose.Schema.Types.ObjectId,
             required: true
         },
@@ -21,15 +21,7 @@ const BillSchema = new Schema(
             required: true,
             default: 0,
         },
-        arrivalDate:{
-            type: Date,
-            required: true,
-        },
-        numDays: {
-            type: Number,
-            required: true,
-            default: 0,
-        },
+
         //if pay online
         paymentMethod: {
             type: String,
@@ -39,6 +31,7 @@ const BillSchema = new Schema(
             status: { type: String },
             update_time: { type: String },
             email_address: { type: String },
+            default: {}
         },
         isPaid: {
             type: Boolean,

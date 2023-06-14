@@ -6,7 +6,6 @@ const roomSlice = createSlice({
         room: null,
         rooms: [],
         roomLoading: true,
-        rentalCard: null
     },
     reducers: {
         loadroomSuccess: (state, action) => {
@@ -33,13 +32,10 @@ const roomSlice = createSlice({
                 }
                 return room;
             });
-        },
-        addRentalCard: (state, action) => {
-            state.rentalCard = action.payload;
-        },
+        }
     },
 });
 
 const { actions, reducer } = roomSlice;
-export const { loadroomFail, loadroomSuccess, addroom, updateroom, deleteroom, findroom, addRentalCard } = actions;
+export const { loadroomFail, loadroomSuccess, addroom, updateroom, deleteroom, findroom } = actions;
 export default reducer;

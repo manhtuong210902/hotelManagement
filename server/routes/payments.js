@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router()
-const billController = require("../controllers/rental.c");
+const billController = require("../controllers/book.c");
 
 router.get('/config', (req, res) => {
   return res.status(200).json({
