@@ -6,6 +6,7 @@ const authSlice = createSlice({
         isAuthenticated: false,
         user: null,
         roles: [],
+        userSelected: null,
     },
     reducers: {
         loadUserSuccess: (state, action) => {
@@ -19,9 +20,12 @@ const authSlice = createSlice({
             state.user = null;
             state.roles = [];
         },
+        findUser: (state, action) => {
+            state.userSelected = action.payload;
+        },
     },
 });
 
 const { actions, reducer } = authSlice;
-export const { loadUserSuccess, loadUserFail } = actions;
+export const { loadUserSuccess, loadUserFail, findUser } = actions;
 export default reducer;

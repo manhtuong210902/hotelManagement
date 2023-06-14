@@ -153,6 +153,13 @@ function Profile() {
                     </Form.Group>
                 )}
 
+                {user.isAdmin && (
+                    <Form.Group className="mb-3">
+                        <Form.Label>Chức vụ</Form.Label>
+                        <Form.Control value={"Admin hệ thông"} disabled={true} />
+                    </Form.Group>
+                )}
+
                 <Row className="mb-3">
                     <Form.Group as={Col}>
                         <Form.Label>
