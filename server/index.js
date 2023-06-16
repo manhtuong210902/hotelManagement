@@ -34,26 +34,29 @@ app.use(cors(corsOptions))
 //     })
 // );
 
-//connect to database
-db.connnect();
-
-io.on("connection", (socket) => {
-    console.log("a user connected ", socket.id);
-
-    socket.on("disconnect", () => {
-        console.log("user disconnected ", socket.id);
-    });
-
-    socket.on("message", (message) => {
-        console.log(message);
-        io.emit("message", message);
-    });
-});
-
 const PORT = 5001;
 
 routes(app);
+//connect to database
+db.connnect()
+ .then(() => {
 
-server.listen(PORT, () => {
-    console.log(`Server running at port ${PORT}`);
-});
+    io.on("connection", (socket) => {
+        console.log("a user connected ", socket.id);
+
+        socket.on("disconnect", () => {
+            console.log("user disconnected ", socket.id);
+        });
+
+        socket.on("message", (message) => {
+            console.log(message);
+            io.emit("message", message);
+        });
+    });
+
+    server.listen(PORT, () => {
+        console.log(`Server running at port ${PORT}`);
+    });
+
+})
+.catch((error) => console.log(`${error} did not connect`))

@@ -26,4 +26,6 @@ router.post("/login", userController.login);
 
 router.put("/update", authenToken, userController.update);
 
+router.post("/name", userController.getNameUserById);
+
 module.exports = router;

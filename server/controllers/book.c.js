@@ -188,8 +188,6 @@ class bookController {
             for await (const doc of cursor) {
               res.push(doc)
             }
-            console.log(res);
-            
             return res            
           } catch (err) {
             console.error('Lỗi khi truy vấn dữ liệu:', err);
@@ -231,6 +229,27 @@ class bookController {
 
     async deleteAllBill(req, res) {
       await Bill.deleteMany()
+    }
+
+    async cancelRental(req, res) {
+      try {
+        const rental = req.body
+        const rentalUpdate = await RentalCard.updateOne({'_id':rental._id},{'status': false, 'cancelAt' : rental.cancelAt, 'cancelBy' : rental.cancelBy })
+        const newRental = await RentalCard.findById(rental._id)
+        
+        if(newRental)
+          return res.json({
+              success: true,
+              newRental
+          });
+
+      } catch (error) {
+          console.log(error);
+          res.status(500).json({
+              success: false,
+              message: "Internal server error",
+          });
+      }
     }
 }
 

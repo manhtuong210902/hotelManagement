@@ -3,6 +3,7 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/user.m");
 const chat = require("../models/chat.m");
 const Message = require("../models/message.m");
+const { ObjectId } = require('mongodb');
 
 class userController {
     //route [GET] :/api/auth
@@ -292,6 +293,26 @@ class userController {
                 success: true,
                 customers,
             });
+        } catch (error) {
+            console.log(error);
+            return res.status(500).json({
+                success: false,
+                message: "Internal server error",
+            });
+        }
+    }
+
+    async getNameUserById(req, res, next) {
+        try {
+            const id = req.body
+            const objID = new ObjectId(id)
+            if(id)
+                var account = await User.findOne({ _id: objID })
+            if(account)
+                return res.json({
+                    success: true,
+                    name: account.fullname,
+                });
         } catch (error) {
             console.log(error);
             return res.status(500).json({

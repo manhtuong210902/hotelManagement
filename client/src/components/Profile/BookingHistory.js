@@ -2,35 +2,17 @@ import React, {useState,useRef, useEffect} from 'react'
 // import { Col  } from "react-bootstrap";
 import {  Popconfirm, Button, Input, Space, Table  } from "antd";
 import { Search } from 'react-bootstrap-icons';
-import { getBills, getRentalCardsActive, getRentalCardsCanceled } from "../../redux/bookingApi";
+import { getBills, getRentalCardsActive, getRentalCardsCanceled, cancelRentalCard, getUserName } from "../../redux/bookingApi";
 import { useDispatch, useSelector } from "react-redux";
 import { Modal } from 'react-bootstrap';
 import formatDate from '../../utils/formatDate'
 const BookingHistory = () => {
-    // const [rentals, setRentals] = useState([{
-    //     number: 444,
-    //     checkInDate: "2023-05-25",
-    //     checkOutDate: "2023-05-28",
-    // },{
-    //     number: 555,
-    //     checkInDate: "2023-05-29",
-    //     checkOutDate: "2023-05-30",
-    // },{
-    //     number: 666,
-    //     checkInDate: "2023-05-30",
-    //     checkOutDate: "2023-06-1",
-    // },{
-    //     number: 777,
-    //     checkInDate: "2023-05-15",
-    //     checkOutDate: "2023-05-25",
-    // }])
+
     const [show, setShow] = useState({});
     const user = useSelector((state) => state.auth.user);
     const rentalCards = useSelector((state) => state.bill.rentals);
     const bills = useSelector((state) => state.bill.bills);
     const rentalCardsCanceled = useSelector((state) => state.bill.cancelRentals);
-    // console.log(bills);
-    
     const dispatch = useDispatch();
 
     useEffect(() => {
@@ -173,11 +155,14 @@ const BookingHistory = () => {
     
       return `${day}/${month}/${year}`;
     }
-    const cancelRental = (id) => {
-      
-      console.log(id);
-      
+
+    //cancel rental
+    const cancelRental = (rental) => {
+      let ren = rental
+      ren = {...rental, status : false, cancelAt : new Date(), cancelBy : user._id}
+      cancelRentalCard(dispatch, {rentalObj: ren, rentalCards, rentalCardsCanceled, bills})
     }
+
     const columnsRental = [
         {
           title: "Số phòng",
@@ -220,7 +205,7 @@ const BookingHistory = () => {
               return (
                 <Popconfirm
                   title="Bạn có chắc chắn muốn hủy đặt phòng này không?"
-                  onConfirm={() => cancelRental(record.number)}
+                  onConfirm={() =>cancelRental(record)}
                   okText="Đồng ý"
                   cancelText="Hủy"
                 >
@@ -266,9 +251,9 @@ const BookingHistory = () => {
           key: "payment",
           width: "20%",
           render: (_, record) => {
-            const dateCheckIn = decreaseDate(2,new Date(record.bill_rental[0].arrivalDate));
-            const curDate = new Date();
-            if (curDate <= dateCheckIn && !record.isPaid)
+            // const dateCheckIn = decreaseDate(2,new Date(record.bill_rental[0].arrivalDate));
+            // const curDate = new Date();
+            if (!record.isPaid)
               return (
                 <Popconfirm
                   title="Bạn có chắc chắn muốn thanh toán phiếu đặt phòng phòng này không?"
@@ -282,7 +267,7 @@ const BookingHistory = () => {
                   </Button>
                 </Popconfirm>
               );
-            else return "";
+            else return "Đã thanh toán";
           },
         },
         {
@@ -320,27 +305,27 @@ const BookingHistory = () => {
                       <strong>Mã hóa đơn:</strong> {record._id}
                     </p>
                     <p style={{ fontSize: "1rem" }}>
-                      <strong>Ngày tạo:</strong> {record.createDate}
+                      <strong>Ngày tạo:</strong> {formatDate(record.createdAt)}
                     </p>
                     <p style={{ fontSize: "1rem" }}>
                       <strong>Số phòng:</strong> {record.number}
                     </p>
                     <p style={{ fontSize: "1rem" }}>
-                      <strong>Đơn giá phòng:</strong> ${record.unitPrice}/ngày
+                      <strong>Đơn giá phòng:</strong> {record.unitPrice} VND/ngày
                     </p>
                     <p style={{ fontSize: "1rem" }}>
-                      <strong>Số ngày thuê:</strong> {record.numOfDates}
+                      <strong>Số ngày thuê:</strong> {record.bill_rental[0].numDays}
                     </p>
                     <p style={{ fontSize: "1rem" }}>
-                      <strong>VAT 10%:</strong> ${record.extraPrice}
+                      <strong>VAT 10%:</strong> {record.extraPrice} VND
                     </p>
                     <p style={{ fontSize: "1rem" }}>
-                      <strong>TỔNG TIỀN:</strong> ${record.totalPrice}
+                      <strong>TỔNG TIỀN:</strong> {record.totalPrice} VND
                     </p>
                     <p style={{ fontSize: "1rem" }}>
                       <strong>Tình trạng:</strong>{" "}
                       {record.isPaid
-                        ? `Đã thanh toán vào ${record.paidAt}`
+                        ? `Đã thanh toán vào ${formatDate(record.paidAt)}`
                         : "Chưa thanh toán"}
                     </p>
                   </Modal.Body>
@@ -393,6 +378,10 @@ const BookingHistory = () => {
           title: "Người hủy",
           dataIndex: "cancelBy",
           key: "cancelBy",
+          render:  (_, record) => {
+              // const name = await  getUserName(record)
+            return user.fullname
+          },
         }
       ];
 

@@ -31,6 +31,18 @@ const billSlice = createSlice({
             state.rentalCard = action.payload;
             state.rentals.unshift(action.payload);
         },
+        removeRentalCard: (state, action) => {
+            state.rentalCard = action.payload;
+            const new_rentalCard = state.rentalCard.filter(item => item._id !== action.payload.payload._id);
+            state.rentals = new_rentalCard;
+        },
+        addCancelRentalCard: (state, action) => {
+            state.cancelRentals.unshift(action.payload);
+        },
+        removeCancelRentalCard: (state, action) => {
+            const new_rentalCard = state.rentalCard.filter(item => item._id !== action.payload.payload._id);
+            state.cancelRentals = new_rentalCard
+        },
         addBill: (state, action) => {
             state.bills.unshift(action.payload);
         },
@@ -47,5 +59,8 @@ export const {
     loadCancelRentalFail, 
     addRentalCard,
     addBill,
+    removeRentalCard,
+    addCancelRentalCard,
+    removeCancelRentalCard
 } = actions;
 export default reducer;

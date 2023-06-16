@@ -8,7 +8,6 @@ import {
     loadCancelRentalsSuccess, 
     loadCancelRentalFail, 
     addRentalCard,
-    addBill,
 } from './billSlice'
 //loader user
 
@@ -47,7 +46,7 @@ export const createBill =  async (dispatch, billObj) => {
             config
         );
 
-        dispatch(addBill(data.newBill));
+        // dispatch(addBill(billObj));
         return data.success
     } catch (err) {
         console.log(err);
@@ -130,7 +129,7 @@ export const getRentalCardsCanceled = async (dispatch, id) => {
             `${API_URL}/book/rental-cards-canceled`,
             { id: id },
             config,
-        ).then(res => {
+        ).then( res => {
             if (res.data.success) {
                 dispatch(loadCancelRentalsSuccess(res.data.rentalCards));
             }
@@ -139,5 +138,45 @@ export const getRentalCardsCanceled = async (dispatch, id) => {
     } catch (error) {
         console.log(error);
         dispatch(loadCancelRentalFail());
+    }
+};
+
+export const cancelRentalCard =  async (dispatch, obj) => {
+    try { 
+        const {data} = await axios.post(
+            `${API_URL}/book/cancel-rental-card`,
+            obj.rentalObj,
+            config
+        );
+
+        if(data.success){
+            const bills = obj.bills.filter(bill => bill.rentalCard !== obj.rentalObj._id)
+            const rentalActive = obj.rentalCards.filter(rental => rental._id !== obj.rentalObj._id)
+            const rentalCancel = [data.newRental, ...obj.rentalCardsCanceled]
+            
+            dispatch(loadRentalSuccess(rentalActive));
+            dispatch(loadBillSuccess(bills));
+            dispatch(loadCancelRentalsSuccess(rentalCancel));
+            return data.newRental
+        }
+    } catch (err) {
+        console.log(err);
+    }
+};
+
+export const getUserName =  async (record) => {
+    
+    try { 
+        const {data} = await axios.post(
+            `${API_URL}/user/name`,
+            {id: record.cancelBy},
+            config
+        );
+
+        if(data.success){
+            return data.name
+        }
+    } catch (err) {
+        console.log(err);
     }
 };

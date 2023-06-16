@@ -71,19 +71,18 @@ function RoomDetails() {
         createRentalCard(dispatch, rentalCard )
         .then((newRental) => {
             setBill({...bill, rentalCard: newRental._id})
-            const Bill = {...bill, number: id, rentalCard: newRental._id, bill_rental: [newRental]   }
-            console.log(Bill);
+            const Bill = {...bill, number: room.number, rentalCard: newRental._id, bill_rental: [newRental]   }
             
-            // createBill(dispatch, Bill )
-            // .then((success) => {
-            //     if(success){
-            //         navigate('/profile')
-            //     }
-            //     else {
-            //         //xoa rental card + show error
-            //         console.log('err');
-            //     }
-            // })
+            createBill(dispatch, Bill )
+            .then((success) => {
+                if(success){
+                    navigate('/profile')
+                }
+                else {
+                    //xoa rental card + show error
+                    console.log('err');
+                }
+            })
         })
         setShow(false);        
     }
