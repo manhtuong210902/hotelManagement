@@ -5,9 +5,34 @@ const base = "https://api-m.sandbox.paypal.com";
 const CLIENT_ID = "AWO48qyUitVQoS7Y_3Uiw4tnqzm5rpyDBcoO-AVJFDjXbIFZuWXZ-hZgPNpD9XuwU_KaTNXg-6rmrWnS"
 const APP_SECRET = "EGwmRbr6uelc8S_LCXsmPi7afTegKJjqQQxRl7N-Nt4bxhqtMMuEC0iM7M2EJB9UrQH9RCeRIPvnv5Z_"
 
+const   generateAccessToken = async () => {
+  const auth = Buffer.from("AWO48qyUitVQoS7Y_3Uiw4tnqzm5rpyDBcoO-AVJFDjXbIFZuWXZ-hZgPNpD9XuwU_KaTNXg-6rmrWnS" + ":" + "EGwmRbr6uelc8S_LCXsmPi7afTegKJjqQQxRl7N-Nt4bxhqtMMuEC0iM7M2EJB9UrQH9RCeRIPvnv5Z_").toString("base64");
+  
+  const response = await fetch(`${base}/v1/oauth2/token`, {
+    method: "post",
+    body: "grant_type=client_credentials",
+    headers: {
+      Authorization: `Basic ${auth}`,
+    },
+  });
+
+  const jsonData = await handleResponse(response);
+  return jsonData.access_token;
+}
+
+const  handleResponse = async(response) => {
+  if (response.status === 200 || response.status === 201) {
+    return response.json();
+  }
+
+  const errorMessage = await response.text();
+  throw new Error(errorMessage);
+}
 class paypalApi {
     async createOrder(data) {
         const accessToken = await generateAccessToken();
+        console.log('create');
+        
         const url = `${base}/v2/checkout/orders`;
         const response = await fetch(url, {
                 method: "post",
@@ -45,28 +70,6 @@ class paypalApi {
     return handleResponse(response);
   }
 
-  async  generateAccessToken() {
-    const auth = Buffer.from(CLIENT_ID + ":" + APP_SECRET).toString("base64");
-    const response = await fetch(`${base}/v1/oauth2/token`, {
-      method: "post",
-      body: "grant_type=client_credentials",
-      headers: {
-        Authorization: `Basic ${auth}`,
-      },
-    });
-
-    const jsonData = await handleResponse(response);
-    return jsonData.access_token;
-  }
-
-  async  handleResponse(response) {
-    if (response.status === 200 || response.status === 201) {
-      return response.json();
-    }
-
-    const errorMessage = await response.text();
-    throw new Error(errorMessage);
-  }
 
 }
 
