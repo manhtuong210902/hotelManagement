@@ -12,7 +12,7 @@ const io = new Server(server);
 
 dotenv.config();
 
-app.use(express.static("public"));
+// app.use(express.static("public"));
 //to using req.body
 app.use(
     express.urlencoded({
@@ -28,11 +28,6 @@ const corsOptions ={
     optionSuccessStatus:200
   }
 app.use(cors(corsOptions))
-// app.use(
-//     cors({
-//         origin: "http://localhost:3000",
-//     })
-// );
 
 const PORT = 5001;
 

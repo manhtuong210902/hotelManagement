@@ -9,7 +9,7 @@ function routes(app) {
     app.use("/api/rooms", roomRouter);
     app.use("/api/chats", chatRouter);
     app.use("/api/book", bookRouter);
-    app.use("/", paymentsRouter);
+    app.use("/api/", paymentsRouter);
     
 }
 

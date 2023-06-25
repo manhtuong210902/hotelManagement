@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router()
-const billController = require("../controllers/book.c");
+const paymentController = require("../controllers/payment.c");
 
 router.get('/config', (req, res) => {
   return res.status(200).json({
@@ -9,8 +9,8 @@ router.get('/config', (req, res) => {
   })
 })
 
-router.post("/my-server/create-paypal-order", billController.createPaypalOrder);
-router.post("/my-server/capture-paypal-order", billController.capturePaypalOrder);
+router.post("/my-server/create-paypal-order", paymentController.createPaypalOrder);
+router.post("/my-server/capture-paypal-order", paymentController.capturePaypalOrder);
 
 
 module.exports = router

@@ -7,6 +7,7 @@ import { API_URL } from "../../utils/constants";
 import { useSelector, useDispatch } from "react-redux";
 import { createRentalCard, createBill } from "../../redux/bookingApi";
 import PayPalPayment from "../Payment/PayPalPayment";
+import { PayPalButtons } from "@paypal/react-paypal-js";
 
 function RoomDetails() {
     const { id } = useParams();
@@ -237,6 +238,7 @@ function RoomDetails() {
                                     {
                                         payment === 'paypal' ?
                                         <PayPalPayment />
+                                        // <PayPalButtons />
                                         :
                                         <Button onClick={() => setShow(true)} className="w-100">ĐẶT PHÒNG</Button>
                                     }
