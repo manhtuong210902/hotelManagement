@@ -6,14 +6,24 @@ import { getBills, getRentalCardsActive, getRentalCardsCanceled, cancelRentalCar
 import { useDispatch, useSelector } from "react-redux";
 import { Modal } from 'react-bootstrap';
 import formatDate from '../../utils/formatDate'
+import PayPalPayment from "../Payment/PayPalPayment";
+
 const BookingHistory = () => {
 
-    const [show, setShow] = useState({});
+    const [show, setShow] = useState(false);
+    const [showPay, setShowPay] = useState(false);
     const user = useSelector((state) => state.auth.user);
     const rentalCards = useSelector((state) => state.bill.rentals);
     const bills = useSelector((state) => state.bill.bills);
     const rentalCardsCanceled = useSelector((state) => state.bill.cancelRentals);
     const dispatch = useDispatch();
+    const [billPay, setBillPay] = useState({
+      bill: {},
+      paymentInfo: {
+        description: 'Booking at ÚKS',
+        cost: 0
+      }
+    })
 
     useEffect(() => {
       getBills(dispatch, user._id);
@@ -25,7 +35,10 @@ const BookingHistory = () => {
     useEffect(()=>{
       
     })
-    const handleClose = () => setShow(false);
+    const handleClose = () => {
+      setShow(false)
+      setShowPay(false)
+    };
     
 
     //search
@@ -163,6 +176,15 @@ const BookingHistory = () => {
       cancelRentalCard(dispatch, {rentalObj: ren, rentalCards, rentalCardsCanceled, bills})
     }
 
+    const handlePayment = (record) =>{
+      setShowPay(true)
+      setBillPay({bill: record,
+        paymentInfo: {
+          description: 'Booking at ÚKS',
+          cost: record.totalPrice/25000
+      }})
+    }
+
     const columnsRental = [
         {
           title: "Số phòng",
@@ -251,13 +273,11 @@ const BookingHistory = () => {
           key: "payment",
           width: "20%",
           render: (_, record) => {
-            // const dateCheckIn = decreaseDate(2,new Date(record.bill_rental[0].arrivalDate));
-            // const curDate = new Date();
             if (!record.isPaid)
               return (
                 <Popconfirm
                   title="Bạn có chắc chắn muốn thanh toán phiếu đặt phòng phòng này không?"
-                  onConfirm={() => cancelRental(record.number)}
+                  onConfirm={() => handlePayment(record)}
                   okText="Đồng ý"
                   cancelText="Hủy"
                 >
@@ -291,6 +311,8 @@ const BookingHistory = () => {
                     Chi tiết
                   </Button>
                 </div>
+
+                
                 <Modal
                   show={show["show_" + record._id]}
                   onHide={() => setShow({ ["show_" + record._id]: false })}
@@ -334,6 +356,24 @@ const BookingHistory = () => {
                       Đóng
                     </Button>
                   </Modal.Footer>
+                </Modal>
+
+                <Modal show={showPay} onHide={handleClose} animation={false}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Thanh toán</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                      <PayPalPayment 
+                        paymentInfo={billPay.paymentInfo}
+                        bill= {billPay.bill}
+                        handleClose={handleClose}
+                      />
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="secondary" onClick={handleClose}>
+                            Đóng
+                        </Button>
+                    </Modal.Footer>
                 </Modal>
               </>
             );

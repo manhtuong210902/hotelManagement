@@ -272,7 +272,7 @@ function RoomDetails() {
                     Đặt phòng
                 </Button>
             </Modal.Footer>
-      </Modal>
+        </Modal>
         </>
     );
 }

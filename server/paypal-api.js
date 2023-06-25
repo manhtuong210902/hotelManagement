@@ -58,6 +58,8 @@ class paypalApi {
 
   async  capturePayment(orderId) {
     const accessToken = await generateAccessToken();
+    console.log(accessToken);
+    
     const url = `${base}/v2/checkout/orders/${orderId}/capture`;
     const response = await fetch(url, {
       method: "post",

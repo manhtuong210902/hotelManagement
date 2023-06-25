@@ -231,6 +231,26 @@ class bookController {
       }
     }
 
+    async updateBill(req, res) {
+      try {
+        const rental = req.body.bill
+        const rentalUpdate = await Bill.updateOne({'_id':rental._id},{'paymentMethod': 'paypal','isPaid' : true, 'paidAt': new Date(), 'paymentResult': rental.paymentResult})
+        const updateBill = await Bill.findById(rental._id)
+        
+        if(updateBill)
+          return res.json({
+              success: true,
+              updateBill 
+          });
+
+      } catch (error) {
+          console.log(error);
+          res.status(500).json({
+              success: false,
+              message: "Internal server error",
+          });
+      }
+    }
 
 }
 

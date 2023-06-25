@@ -2,17 +2,18 @@ import React from 'react'
 import { PayPalButtons } from "@paypal/react-paypal-js";
 import { API_URL } from "../../utils/constants";
 import axios from "axios";
-import { createRentalCard, createBill } from "../../redux/bookingApi";
+import { createRentalCard, createBill, updateBill } from "../../redux/bookingApi";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
-const PayPalPayment = ({paymentInfo, bill, rentalCard}) => {
-    console.log(bill);
+const PayPalPayment = ({paymentInfo, bill, rentalCard, handleClose}) => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const handleBooking = async (paymentRes) => {
+      if(bill.rentalCard === "")
       createRentalCard(dispatch, rentalCard )
-      .then((newRental) => {
+      .then((newRental) => 
+      {
           const Bill = {
               ...bill, rentalCard: newRental._id, isPaid : true, paidAt: new Date(), paymentResult: {
               id: paymentRes.id,
@@ -33,6 +34,27 @@ const PayPalPayment = ({paymentInfo, bill, rentalCard}) => {
               }
           })
       })
+
+      else {
+        const Bill = {
+          ...bill, isPaid : true, paidAt: new Date(), paymentResult: {
+            id: paymentRes.id,
+            status: paymentRes.status,
+            email_address: paymentRes.payer.email_address,
+            name:paymentRes.payer.name.given_name +' '+ paymentRes.payer.name.surname,
+          }  
+        }
+        updateBill(dispatch, Bill )
+          .then((success) => {
+              if(success){
+                  navigate('/profile')
+              }
+              else {
+                  //xoa rental card + show error
+                  console.log('err');
+              }
+          })
+      }
     }
     const createOrder = () => {
         return fetch(`${API_URL}//my-server/create-paypal-order`, {
@@ -60,6 +82,7 @@ const PayPalPayment = ({paymentInfo, bill, rentalCard}) => {
       );
       if(data){
          await handleBooking(data)
+         handleClose()
       }
   };
 
