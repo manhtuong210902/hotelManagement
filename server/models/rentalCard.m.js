@@ -6,11 +6,11 @@ const RentalCardSchema = new Schema(
         //admin or customer
         booker: {
             type: mongoose.Schema.Types.ObjectId,
-            required: true
+            required: true,
         },
         user: {
             type: mongoose.Schema.Types.ObjectId,
-            required: true
+            required: true,
         },
         room: {
             type: mongoose.Schema.Types.ObjectId,
@@ -21,7 +21,7 @@ const RentalCardSchema = new Schema(
             required: true,
             default: 0,
         },
-        arrivalDate:{
+        arrivalDate: {
             type: Date,
             required: true,
         },
@@ -35,15 +35,15 @@ const RentalCardSchema = new Schema(
         },
         status: {
             type: Boolean,
-            default: true
+            default: true,
         },
         cancelBy: {
             type: String,
-            default: ''
+            default: "",
         },
-        cancelAt:{
+        cancelAt: {
             type: Date,
-            default:null
+            default: null,
         },
     },
     {

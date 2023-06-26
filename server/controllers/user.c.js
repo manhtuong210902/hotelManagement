@@ -3,7 +3,7 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/user.m");
 const chat = require("../models/chat.m");
 const Message = require("../models/message.m");
-const { ObjectId } = require('mongodb');
+const { ObjectId } = require("mongodb");
 
 class userController {
     //route [GET] :/api/auth
@@ -35,7 +35,7 @@ class userController {
         try {
             const user = await User.findOne({ email });
             if (!user) {
-                return res.status(400).json({
+                return res.json({
                     success: false,
                     message: "user not found",
                 });
@@ -43,7 +43,7 @@ class userController {
 
             const validPassword = await bcrypt.compare(password, user.password);
             if (!validPassword) {
-                return res.status(400).json({
+                return res.json({
                     success: false,
                     message: "wrong password",
                 });
@@ -66,12 +66,12 @@ class userController {
     //@desc register user
     //@access public
     async register(req, res, next) {
-        const { email, fullname, password } = req.body;
+        const { email, fullname, cccd, password } = req.body;
         try {
             //check for existing user
             const user = await User.findOne({ email });
             if (user) {
-                return res.status(400).json({
+                return res.json({
                     success: false,
                     message: "Email already taken",
                 });
@@ -84,6 +84,7 @@ class userController {
             const newUser = new User({
                 email,
                 fullname,
+                cccd,
                 password: hashedPassword,
             });
 
@@ -304,11 +305,10 @@ class userController {
 
     async getNameUserById(req, res, next) {
         try {
-            const id = req.body
-            const objID = new ObjectId(id)
-            if(id)
-                var account = await User.findOne({ _id: objID })
-            if(account)
+            const id = req.body;
+            const objID = new ObjectId(id);
+            if (id) var account = await User.findOne({ _id: objID });
+            if (account)
                 return res.json({
                     success: true,
                     name: account.fullname,
