@@ -29,9 +29,8 @@ const BillSchema = new Schema(
         paymentResult: {
             id: { type: String },
             status: { type: String },
-            update_time: { type: String },
             email_address: { type: String },
-            default: {}
+            name: { type: String },
         },
         isPaid: {
             type: Boolean,

@@ -8,6 +8,7 @@ import {
     loadCancelRentalsSuccess, 
     loadCancelRentalFail, 
     addRentalCard,
+    updateBillSuccess
 } from './billSlice'
 //loader user
 
@@ -175,6 +176,24 @@ export const getUserName =  async (record) => {
 
         if(data.success){
             return data.name
+        }
+    } catch (err) {
+        console.log(err);
+    }
+};
+
+export const updateBill =  async (dispatch,record) => {
+    
+    try { 
+        const {data} = await axios.post(
+            `${API_URL}/book/update-bill`,
+            {bill: record},
+            config
+        );
+
+        if(data.success){
+            dispatch(updateBillSuccess(record));
+            return data.updateBill
         }
     } catch (err) {
         console.log(err);

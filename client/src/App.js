@@ -12,10 +12,9 @@ const ROLES = {
 
 function App() {
     const initialOptions = {
-        "client-id": process.env.REACT_APP_CLIENT_ID,
+        "client-id": "AWO48qyUitVQoS7Y_3Uiw4tnqzm5rpyDBcoO-AVJFDjXbIFZuWXZ-hZgPNpD9XuwU_KaTNXg-6rmrWnS",
         currency: "USD",
         intent: "capture",
-        // "data-client-token": "abc123xyz==",
     };
 
     return (

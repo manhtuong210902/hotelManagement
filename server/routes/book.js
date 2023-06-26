@@ -12,5 +12,6 @@ router.post("/rental-cards-canceled", bookController.getRentalCardsCanceled);
 router.post("/get-rental-card", bookController.getRentalCard);
 router.post("/cancel-rental-card", bookController.cancelRental);
 router.post('/del', bookController.deleteAllBill)
+router.post('/update-bill', bookController.updateBill)
 
 module.exports = router;

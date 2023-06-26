@@ -15,6 +15,11 @@ function RoomDetails() {
     const [room, setRoom] = useState(null);
     const [payment, setPayment] = useState("later_money");
     const [initialDate, setInitialDate] = useState("");
+    const [paymentInfo, setPaymentInfo] = useState({
+        description: "Booking at ÚKS",
+        cost: 0,
+    });
+
     const user = useSelector((state) => state.auth.user);
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -37,7 +42,7 @@ function RoomDetails() {
         extraPrice: 0,
         totalPrice: 0,
         paymentMethod: payment,
-        paymentResult: "",
+        paymentResult: {},
         isPaid: false,
         paidAt: "",
     });
@@ -52,6 +57,7 @@ function RoomDetails() {
             const currentDate = new Date();
             const formattedDate = currentDate.toISOString().substr(0, 10);
             setInitialDate(formattedDate);
+            const total = result.data.room.price * rentalCard.numDays + result.data.room.price * 0.1;
             setRentalCard({
                 ...rentalCard,
                 arrivalDate: formattedDate,
@@ -59,9 +65,11 @@ function RoomDetails() {
             setBill({
                 ...bill,
                 unitPrice: result.data.room.price,
+
                 extraPrice: result.data.room.price * 0.1,
                 totalPrice: result.data.room.price * rentalCard.numDays + result.data.room.price * 0.1,
             });
+            setPaymentInfo({ ...paymentInfo, cost: total / 25000 });
         };
         fetchApi();
     }, [id]);
@@ -93,6 +101,7 @@ function RoomDetails() {
     const changeNumOfDay = (num) => {
         setRentalCard({ ...rentalCard, numDays: parseInt(num) });
         setBill({ ...bill, totalPrice: calTotalPrice(bill, num) });
+        setPaymentInfo({ ...paymentInfo, cost: calTotalPrice(bill, num) / 25000 });
     };
 
     return (
@@ -174,6 +183,7 @@ function RoomDetails() {
                                             }}
                                         />
                                     </p>
+
                                     <p className="d-flex align-items-center">
                                         <label className="me-2">
                                             {"> "}
@@ -229,8 +239,13 @@ function RoomDetails() {
                                         <p className="mb-3 text-danger">
                                             <strong>THÀNH TIỀN {bill.totalPrice}</strong>
                                         </p>
+
                                         {payment === "paypal" ? (
-                                            <PayPalPayment />
+                                            <PayPalPayment
+                                                paymentInfo={paymentInfo}
+                                                bill={bill}
+                                                rentalCard={rentalCard}
+                                            />
                                         ) : (
                                             <Button onClick={() => setShow(true)} className="w-100">
                                                 ĐẶT PHÒNG

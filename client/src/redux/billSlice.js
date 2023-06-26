@@ -29,7 +29,8 @@ const billSlice = createSlice({
         },
         addRentalCard: (state, action) => {
             state.rentalCard = action.payload;
-            state.rentals.unshift(action.payload);
+            // state.rentals.unshift(action.payload);
+            state.rentals =[action.payload,...state.rentals]
         },
         removeRentalCard: (state, action) => {
             state.rentalCard = action.payload;
@@ -37,7 +38,7 @@ const billSlice = createSlice({
             state.rentals = new_rentalCard;
         },
         addCancelRentalCard: (state, action) => {
-            state.cancelRentals.unshift(action.payload);
+            state.cancelRentals =[action.payload,...state.cancelRentals]
         },
         removeCancelRentalCard: (state, action) => {
             const new_rentalCard = state.rentalCard.filter(item => item._id !== action.payload.payload._id);
@@ -45,6 +46,14 @@ const billSlice = createSlice({
         },
         addBill: (state, action) => {
             state.bills.unshift(action.payload);
+        },
+        updateBillSuccess: (state, action) => {
+            const new_bills = state.bills.map(item => {
+                if(item._id === action.payload._id)
+                    return {...item, isPaid : true, paidAt: action.payload.paidAt, paymentResult: action.payload.paymentResult }
+                return item
+            });
+            state.bills = new_bills;
         },
     },
 });
@@ -61,6 +70,7 @@ export const {
     addBill,
     removeRentalCard,
     addCancelRentalCard,
-    removeCancelRentalCard
+    removeCancelRentalCard,
+    updateBillSuccess
 } = actions;
 export default reducer;

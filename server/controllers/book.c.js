@@ -1,6 +1,5 @@
 const Bill = require("../models/bill.m");
 const RentalCard = require("../models/rentalCard.m")
-const {createOrder, capturePayment} = require("../paypal-api")
 const { ObjectId } = require('mongodb');
 class bookController {
 
@@ -38,26 +37,6 @@ class bookController {
               message: "Internal server error",
           });
       }
-  }
-
-    async createPaypalOrder(req, res)  {
-        try {
-          const order = await createOrder();
-          res.json(order);
-        } catch (err) 
-        {
-          res.status(500).send(err.message);
-        }
-    }
-
-    async capturePaypalOrder(req, res)  {
-        const { orderID } = req.body;
-        try {
-          const captureData = await capturePayment(orderID);
-          res.json(captureData);
-        } catch (err) {
-          res.status(500).send(err.message);
-        }
     }
 
     async getBills(req, res) {
@@ -251,6 +230,28 @@ class bookController {
           });
       }
     }
+
+    async updateBill(req, res) {
+      try {
+        const rental = req.body.bill
+        const rentalUpdate = await Bill.updateOne({'_id':rental._id},{'paymentMethod': 'paypal','isPaid' : true, 'paidAt': new Date(), 'paymentResult': rental.paymentResult})
+        const updateBill = await Bill.findById(rental._id)
+        
+        if(updateBill)
+          return res.json({
+              success: true,
+              updateBill 
+          });
+
+      } catch (error) {
+          console.log(error);
+          res.status(500).json({
+              success: false,
+              message: "Internal server error",
+          });
+      }
+    }
+
 }
 
 module.exports = new bookController();
