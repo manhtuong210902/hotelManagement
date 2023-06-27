@@ -13,4 +13,6 @@ router.get("/:id", authenToken, roomController.getById);
 router.delete("/:id", authenToken, roomController.delete);
 router.put("/:id", authenToken, roomController.update);
 
+router.post("/get-room-info", authenToken, roomController.searchRoomInfo);
+
 module.exports = router;

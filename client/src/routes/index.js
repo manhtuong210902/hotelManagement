@@ -20,7 +20,9 @@ import ListCus from "../pages/ListCus/ListCus";
 import ListEmployee from "../pages/ListEmployee/ListEmployee";
 import AddEmployee from "../pages/AddEmployee/AddEmployee";
 import UpdateEmployee from "../pages/UpdateEmployee/UpdateEmployee";
-
+import BookingManagement from "../pages/BookingManagement";
+import EditRental from "../pages/BookingManagement/EditRental";
+import ViewRental from "../pages/BookingManagement/ViewRental";
 //public routes
 const publicRoutes = [
     { path: config.routes.login, component: Login, layout: AuthLayout },
@@ -43,6 +45,9 @@ const managerRoutes = [
     { path: config.routes.addroom, component: AddRoom, layout: ManagerLayout },
     { path: config.routes.listroom, component: ListRoom, layout: ManagerLayout },
     { path: config.routes.editroom, component: UpdateRoom, layout: ManagerLayout },
+    { path: config.routes.bookingByNV, component: BookingManagement, layout: ManagerLayout },
+    { path: config.routes.viewRental, component: ViewRental, layout: ManagerLayout },
+    { path: config.routes.editRental, component: EditRental, layout: ManagerLayout },
 ];
 
 //admin routes
@@ -52,6 +57,9 @@ const adminRoutes = [
     { path: config.routes.listemployee, component: ListEmployee, layout: AdminLayout },
     { path: config.routes.addemployee, component: AddEmployee, layout: AdminLayout },
     { path: config.routes.editemployee, component: UpdateEmployee, layout: AdminLayout },
+    { path: config.routes.bookingByNV, component: BookingManagement, layout: AdminLayout },
+    { path: config.routes.viewRental, component: ViewRental, layout: AdminLayout },
+    { path: config.routes.editRental, component: EditRental, layout: AdminLayout },
 ];
 
 export { publicRoutes, customerRoutes, managerRoutes, adminRoutes };
