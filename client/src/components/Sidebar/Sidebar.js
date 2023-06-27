@@ -58,7 +58,7 @@ function Sidebar() {
             <ul className="list-unstyled ps-0">
                 <div className="d-flex align-items-center gap-1 flex-column">
                     <h5>{user.fullname}</h5>
-                    <span>{user.isAdmin ? "Admin Hệ Thống" : "Quản lý khách sạn"}</span>
+                    <span>{user.isAdmin ? "Admin Hệ Thống" : `${user.position} Khách Sạn`}</span>
                     <Button
                         className="d-flex align-items-center gap-2 justify-content-center mt-3 mb-2"
                         onClick={() => {
@@ -96,6 +96,26 @@ function Sidebar() {
                                         </Link>
                                     );
                                 })}
+                            </ListGroup>
+                        </Accordion.Body>
+                    </Accordion.Item>
+                </Accordion>
+
+                <Accordion defaultActiveKey={["0"]} alwaysOpen className="mb-2">
+                    <Accordion.Item eventKey="0">
+                        <Accordion.Header>Quản lý báo cáo</Accordion.Header>
+                        <Accordion.Body>
+                            <ListGroup>
+                                <Link to={config.routes.revenuereport} className="sidebar-item">
+                                    <ListGroup.Item active={location.pathname === config.routes.revenuereport}>
+                                        Báo cáo doanh thu
+                                    </ListGroup.Item>
+                                </Link>
+                                <Link to={config.routes.densityreport} className="sidebar-item">
+                                    <ListGroup.Item active={location.pathname === config.routes.densityreport}>
+                                        Báo cáo mật độ
+                                    </ListGroup.Item>
+                                </Link>
                             </ListGroup>
                         </Accordion.Body>
                     </Accordion.Item>

@@ -237,7 +237,7 @@ function RoomDetails() {
 
                                     <div className="border-top pt-3 pb-2">
                                         <p className="mb-3 text-danger">
-                                            <strong>THÀNH TIỀN {bill.totalPrice}</strong>
+                                            <strong>THÀNH TIỀN {bill.totalPrice.toLocaleString("vi-VN")}đ</strong>
                                         </p>
 
                                         {payment === "paypal" ? (

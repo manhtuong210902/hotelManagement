@@ -16,6 +16,8 @@ const routes = {
     listemployee: "/employee",
     addemployee: "/employee/add",
     editemployee: "/employee/edit/:id",
+    revenuereport: "/manager/revenue",
+    densityreport: "/manager/density",
 };
 
 export default routes;

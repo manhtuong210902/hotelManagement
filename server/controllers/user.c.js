@@ -179,7 +179,7 @@ class userController {
                 customer: newUser._id,
             });
 
-            newUser.roles.push("User");
+            newUser.roles.push("Manager");
             await newUser.save();
 
             const newMessage = new Message({
@@ -287,7 +287,7 @@ class userController {
     async getEmployee(req, res, next) {
         try {
             const customers = await User.find({
-                isEmployee: true,
+                isManager: true,
             });
 
             return res.json({

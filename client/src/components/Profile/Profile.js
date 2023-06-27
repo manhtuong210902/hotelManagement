@@ -20,6 +20,7 @@ function Profile() {
         defaultValues: {
             email: user.email,
             fullname: user.fullname,
+            cccd: user.cccd,
             phone: user?.phone || "",
             gender: user?.gender || "",
             birthDay: user?.birthDay || "",
@@ -110,6 +111,24 @@ function Profile() {
                     </Form.Text>
                 </Form.Group>
 
+                <Row className="mb-3">
+                    <Form.Group as={Col}>
+                        <Form.Label>
+                            CCCD/CMND{" "}
+                            <span className="text-danger fst-italic" style={{ fontSize: 12 }}>
+                                {user?.cccd ? "" : "(Chưa cập nhật)"}
+                            </span>
+                        </Form.Label>
+                        <Form.Control disabled={isUpdate} placeholder="Nhập địa chỉ" {...register("cccd")} />
+                    </Form.Group>
+                    {user.isManager && (
+                        <Form.Group as={Col}>
+                            <Form.Label>Chức vụ</Form.Label>
+                            <Form.Control value={user?.position} disabled={true} />
+                        </Form.Group>
+                    )}
+                </Row>
+
                 <Form.Group className="mb-3">
                     <Form.Label>
                         Số điện thoại{" "}
@@ -127,31 +146,6 @@ function Profile() {
                         {...register("phone")}
                     />
                 </Form.Group>
-
-                {/* để đây */}
-                {/* <Form.Group className="mb-3">
-                    <Form.Label>
-                        Số điện thoại{" "}
-                        <span className="text-danger fst-italic" style={{ fontSize: 12 }}>
-                            {user?.phone ? "" : "(Chưa cập nhật)"}
-                        </span>
-                    </Form.Label>
-
-                    <InputMask
-                        mask="999.999.999"
-                        className="form-control"
-                        placeholder="Nhập số tiền"
-                        disabled={isUpdate}
-                        {...register("abc")}
-                    />
-                </Form.Group> */}
-
-                {user.isManager && (
-                    <Form.Group className="mb-3">
-                        <Form.Label>Chức vụ</Form.Label>
-                        <Form.Control value={"Quản lý"} disabled={true} />
-                    </Form.Group>
-                )}
 
                 {user.isAdmin && (
                     <Form.Group className="mb-3">

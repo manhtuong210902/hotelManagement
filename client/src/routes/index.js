@@ -20,6 +20,8 @@ import ListCus from "../pages/ListCus/ListCus";
 import ListEmployee from "../pages/ListEmployee/ListEmployee";
 import AddEmployee from "../pages/AddEmployee/AddEmployee";
 import UpdateEmployee from "../pages/UpdateEmployee/UpdateEmployee";
+import RevenueReport from "../pages/RevenueReport/RevenueReport";
+import DensityReport from "../pages/DensityReport/DensityReport";
 
 //public routes
 const publicRoutes = [
@@ -43,6 +45,8 @@ const managerRoutes = [
     { path: config.routes.addroom, component: AddRoom, layout: ManagerLayout },
     { path: config.routes.listroom, component: ListRoom, layout: ManagerLayout },
     { path: config.routes.editroom, component: UpdateRoom, layout: ManagerLayout },
+    { path: config.routes.revenuereport, component: RevenueReport, layout: ManagerLayout },
+    { path: config.routes.densityreport, component: DensityReport, layout: ManagerLayout },
 ];
 
 //admin routes
