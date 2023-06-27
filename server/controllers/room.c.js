@@ -141,6 +141,24 @@ class roomController {
             });
         }
     }
+
+    async searchRoomInfo(req, res, next) {
+        try {
+            const { id } = req.body;
+            const room = await Room.find({ number: id });
+            
+            return res.json({
+                success: true,
+                room,
+            });
+        } catch (error) {
+            console.log(error);
+            return res.status(500).json({
+                success: false,
+                message: "Internal server error",
+            });
+        }
+    }
 }
 
 module.exports = new roomController();

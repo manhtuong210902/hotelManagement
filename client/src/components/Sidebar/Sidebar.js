@@ -7,6 +7,25 @@ import { BoxArrowRight } from "react-bootstrap-icons";
 
 function Sidebar() {
     const dispatch = useDispatch();
+
+    const bookingManagement = [
+        {
+            id: 1,
+            name: "Thêm đơn đặt phòng",
+            path: config.routes.bookingByNV,
+        },
+        {
+            id: 2,
+            name: "Xem đơn đặt phòng",
+            path: config.routes.viewRental,
+        },
+        {
+            id: 3,
+            name: "Chỉnh đơn đặt phòng",
+            path: config.routes.editRental,
+        },
+    ];
+
     const roomManagamentList = [
         {
             id: 1,
@@ -74,9 +93,15 @@ function Sidebar() {
                         <Accordion.Header>Quản lý đặt phòng</Accordion.Header>
                         <Accordion.Body>
                             <ListGroup>
-                                <ListGroup.Item>Thêm đặt phòng</ListGroup.Item>
-                                <ListGroup.Item>Xem đơn đặt phòng</ListGroup.Item>
-                                <ListGroup.Item>Chỉnh sửa đặt phòng</ListGroup.Item>
+                                {bookingManagement.map((item) => {
+                                    return (
+                                        <Link to={item.path} key={item.id} className="sidebar-item">
+                                            <ListGroup.Item active={location.pathname === item.path}>
+                                                {item.name}
+                                            </ListGroup.Item>
+                                        </Link>
+                                    );
+                                })}
                             </ListGroup>
                         </Accordion.Body>
                     </Accordion.Item>

@@ -16,6 +16,9 @@ const routes = {
     listemployee: "/employee",
     addemployee: "/employee/add",
     editemployee: "/employee/edit/:id",
+    bookingByNV: '/booking',
+    viewRental: '/view-rental',
+    editRental: '/edit-rental'
 };
 
 export default routes;

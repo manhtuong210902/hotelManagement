@@ -1,4 +1,5 @@
 const Bill = require("../models/bill.m");
+const User = require("../models/user.m");
 const RentalCard = require("../models/rentalCard.m")
 const { ObjectId } = require('mongodb');
 class bookController {
@@ -252,6 +253,81 @@ class bookController {
       }
     }
 
+    async getRentalCardCheckIn(req, res) {
+      try {
+        const rentalCard = await RentalCard.find({isCheckOut: false});
+        const bill = await Bill.find();
+        const users = await User.find();        
+         
+        return res.json({
+            success: true,
+            rentalCard,
+            bill,
+            users
+        });
+      } catch (error) {
+          console.log(error);
+          res.status(500).json({
+              success: false,
+              message: "Internal server error",
+          });
+      }
+      
+    }
+
+    async getBillById(req, res) {
+      const {id} = req.body
+      try {
+        const bill = await Bill.findOne({rentalCard: id});
+        
+        return res.json({
+            success: true,
+            bill,
+        });
+      } catch (error) {
+          console.log(error);
+          res.status(500).json({
+              success: false,
+              message: "Internal server error",
+          });
+      }
+    }
+
+    async checkIn(req, res) {
+      try {
+        const {id} = req.body
+        const rentalUpdate = await RentalCard.updateOne({'_id':id},{'isCheckIn': true})
+        
+        return res.json({
+            success: true,
+        });
+
+      } catch (error) {
+          console.log(error);
+          res.status(500).json({
+              success: false,
+              message: "Internal server error",
+          });
+      }
+    }
+
+    async checkOut(req, res) {
+      try {
+        const {id} = req.body
+        const rentalUpdate = await RentalCard.updateOne({'_id':id},{'isCheckOut': true})
+        
+        return res.json({
+            success: true,
+        });
+
+      } catch (error) {
+          console.log(error);
+          res.status(500).json({
+              success: false,
+              message: "Internal server error",
+          });
+      }
+    }
 }
 
 module.exports = new bookController();
