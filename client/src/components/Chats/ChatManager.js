@@ -12,7 +12,7 @@ function ChatManager() {
                 <ChatDotsFill /> NHẮN TIN
             </h5>
             <div className="d-flex mt-5 p-1">
-                <ListChatUser setIdChat={setIdChat} />
+                <ListChatUser setIdChat={setIdChat} idChat={idChat} />
                 <ChatFrame idChat={idChat} />
             </div>
         </div>

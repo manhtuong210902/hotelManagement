@@ -4,7 +4,7 @@ import { Form, ListGroup, Spinner } from "react-bootstrap";
 import { API_URL } from "../../utils/constants";
 import useDebounce from "../../hooks/useDebounce";
 
-function ListChatUser({ setIdChat }) {
+function ListChatUser({ setIdChat, idChat }) {
     const [searchValue, setSearchValue] = useState("");
     const [searchResult, setSearchResult] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -19,12 +19,8 @@ function ListChatUser({ setIdChat }) {
             let result = [];
             if (debounceValue.length > 0) {
                 result = await axios.get(`${API_URL}/chats/search?q=${debounceValue}`);
-                console.log("none");
-                console.log(result);
             } else {
                 result = await axios.get(`${API_URL}/chats`);
-                console.log("no none");
-                console.log(result);
             }
             setLoading(false);
             setSearchResult(result.data.chats);
@@ -62,6 +58,7 @@ function ListChatUser({ setIdChat }) {
                             <ListGroup.Item
                                 key={item._id}
                                 className="d-flex justify-content-between align-items-start"
+                                active={item.customer._id === idChat}
                                 onClick={() => {
                                     setIdChat(item.customer._id);
                                     setSearchValue("");
