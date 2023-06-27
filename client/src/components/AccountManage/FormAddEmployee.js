@@ -26,7 +26,7 @@ function FormAddEmployee() {
             }
         }
         delete data.passwordRe;
-        data.isEmployee = true;
+        data.isManager = true;
         try {
             setLoading(true);
             const res = await axios.post(`${API_URL}/user/add/employee`, data);
@@ -108,16 +108,15 @@ function FormAddEmployee() {
                     </Form.Text>
                 </Form.Group>
                 <Form.Group as={Col}>
-                    <Form.Label>
-                        Chức vụ <span className="text-danger">*</span>
-                    </Form.Label>
-                    <Form.Control
-                        type="text"
-                        placeholder="Nhập chức vụ"
+                    <Form.Label>Chọn chức vụ</Form.Label>
+                    <Form.Select
                         {...register("position", {
                             required: true,
                         })}
-                    />
+                    >
+                        <option>Quản lý</option>
+                        <option>Lê Tân</option>
+                    </Form.Select>
                     <Form.Text className="text-danger">
                         {errors?.position?.type === "required" && "Không được bỏ trống"}
                     </Form.Text>

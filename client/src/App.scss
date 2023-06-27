@@ -237,3 +237,45 @@ to {
 .chat-customer-list-message.manager{
   height: 450px;
 }
+
+.review-item{
+  margin: 10px 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.review-item_name{
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.review-item_time{
+  font-weight: 400;
+  font-size: 12px;
+}
+
+.review-item_stars{
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  gap: 5px;
+  color: rgb(249, 159, 14);
+  margin: 4px 0;
+}
+
+.review-item_content{
+  margin-top: 10px;
+}
+
+.rating-input{
+  display: flex;
+  align-items: center;
+  font-size: 20px;
+  margin: 10px 0;
+  gap: 10px;
+  color: rgb(249, 159, 14);
+  span{
+    cursor: pointer;
+  }
+}
+

@@ -1,5 +1,5 @@
 import { Button, Form, InputGroup } from "react-bootstrap";
-import { Key, Person } from "react-bootstrap-icons";
+import { Envelope, Key, Person, PersonVcard } from "react-bootstrap-icons";
 import config from "../../config";
 import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
@@ -32,18 +32,20 @@ function RegisterForm() {
         <div className="text-center login-form bg-light">
             <div className="mb-4">
                 <h3>Đăng kí</h3>
-                <p>Đăng kí với Hotel HCMUS</p>
+                <p>
+                    Đăng kí với <span className="text-primary fw-bold">ÚKS</span>
+                </p>
             </div>
             <div className="text-start p-4">
                 <Form onSubmit={handleSubmit(onSubmit)}>
-                    <Form.Text className="text-danger">{error}</Form.Text>
+                    <Form.Text className="text-danger">{error && ">> Email này đã được đăng kí rồi"}</Form.Text>
                     <Form.Group className="mb-3">
                         <Form.Label>
                             Email<span className="text-danger">*</span>
                         </Form.Label>
                         <InputGroup>
                             <InputGroup.Text>
-                                <Person />
+                                <Envelope />
                             </InputGroup.Text>
                             <Form.Control
                                 placeholder="Nhập email"
@@ -93,6 +95,31 @@ function RegisterForm() {
                                 : ""}
                         </Form.Text>
                     </Form.Group>
+                    <Form.Group className="mb-3">
+                        <Form.Label>
+                            CCCD/CMND<span className="text-danger">*</span>
+                        </Form.Label>
+                        <InputGroup>
+                            <InputGroup.Text>
+                                <PersonVcard />
+                            </InputGroup.Text>
+                            <Form.Control
+                                placeholder="Nhập CCCD/CMND"
+                                type="number"
+                                {...register("cccd", {
+                                    required: true,
+                                    minLength: 6,
+                                })}
+                            />
+                        </InputGroup>
+                        <Form.Text className="text-danger">
+                            {errors?.fullname?.type === "required"
+                                ? "Không được bỏ trống"
+                                : errors?.fullname?.type === "minLength"
+                                ? "Họ tên phải có từ 6 kí tự"
+                                : ""}
+                        </Form.Text>
+                    </Form.Group>
                     <Form.Group className="mb-4">
                         <Form.Label>
                             Mật khẩu<span className="text-danger">*</span>
@@ -124,7 +151,7 @@ function RegisterForm() {
                         </Form.Label>
                         <InputGroup>
                             <InputGroup.Text>
-                                <Person />
+                                <Key />
                             </InputGroup.Text>
                             <Form.Control
                                 placeholder="Nhập lại mật khẩu"

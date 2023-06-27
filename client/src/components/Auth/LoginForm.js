@@ -22,14 +22,14 @@ function LoginForm() {
 
     const onSubmit = async (data) => {
         const res = await loginUser(data, dispatch);
+        console.log(res);
         if (!res.success) {
-            setError(res.message);
+            setError("Sai email hoặc mật khẩu");
             return;
         }
 
         navigate(from, { replace: true });
     };
-
 
     return (
         <div className="text-center login-form bg-light">
@@ -38,7 +38,7 @@ function LoginForm() {
                 <p>Đăng nhập để cùng đặt phòng nào</p>
             </div>
             <div className="text-start p-4">
-                {error && <Alert variant="danger">Mật khẩu không hợp lệ</Alert>}
+                {error && <Alert variant="danger">Sai email hoặc mật khẩu</Alert>}
                 <Form onSubmit={handleSubmit(onSubmit)}>
                     <Form.Group className="mb-3">
                         <Form.Label>

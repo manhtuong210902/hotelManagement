@@ -23,6 +23,8 @@ import UpdateEmployee from "../pages/UpdateEmployee/UpdateEmployee";
 import BookingManagement from "../pages/BookingManagement";
 import EditRental from "../pages/BookingManagement/EditRental";
 import ViewRental from "../pages/BookingManagement/ViewRental";
+import RevenueReport from "../pages/RevenueReport/RevenueReport";
+import DensityReport from "../pages/DensityReport/DensityReport";
 //public routes
 const publicRoutes = [
     { path: config.routes.login, component: Login, layout: AuthLayout },
@@ -48,6 +50,10 @@ const managerRoutes = [
     { path: config.routes.bookingByNV, component: BookingManagement, layout: ManagerLayout },
     { path: config.routes.viewRental, component: ViewRental, layout: ManagerLayout },
     { path: config.routes.editRental, component: EditRental, layout: ManagerLayout },
+
+    { path: config.routes.revenuereport, component: RevenueReport, layout: ManagerLayout },
+    { path: config.routes.densityreport, component: DensityReport, layout: ManagerLayout },
+
 ];
 
 //admin routes
