@@ -10,14 +10,6 @@ const RentalCardSchema = new Schema(
         },
         user: {
             type: mongoose.Schema.Types.ObjectId,
-<<<<<<< HEAD
-        },
-        infoCus: {
-            Name: { type: String },
-            Email: { type: String },
-=======
-            required: true,
->>>>>>> 0d1cf57f19b55f7780e20aa867c88e94384113ec
         },
         room: {
             type: mongoose.Schema.Types.ObjectId,
