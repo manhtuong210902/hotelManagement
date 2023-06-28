@@ -11,6 +11,7 @@ const RentalCardSchema = new Schema(
         user: {
             type: mongoose.Schema.Types.ObjectId,
         },
+
         room: {
             type: mongoose.Schema.Types.ObjectId,
             required: true,

@@ -25,7 +25,6 @@ import EditRental from "../pages/BookingManagement/EditRental";
 import ViewRental from "../pages/BookingManagement/ViewRental";
 import RevenueReport from "../pages/RevenueReport/RevenueReport";
 import DensityReport from "../pages/DensityReport/DensityReport";
-
 //public routes
 const publicRoutes = [
     { path: config.routes.login, component: Login, layout: AuthLayout },

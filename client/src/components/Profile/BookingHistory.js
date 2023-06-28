@@ -204,14 +204,21 @@ const BookingHistory = () => {
           ...getColumnSearchProps('number')
         },
         {
-            title: "Ngày nhận phòng",
-            dataIndex: "checkInDate",
-            key: "checkInDate",
-            width: "20%",
-            ...getColumnSearchProps("checkInDate"),
-            render: (_, record) => {
-                return formatDate(record.arrivalDate);
-            },
+          title: "Mã đơn",
+          dataIndex: "_id",
+          key: "_id",
+          width: "15%",
+          ...getColumnSearchProps('number')
+        },
+        {
+          title: "Ngày nhận phòng",
+          dataIndex: "checkInDate",
+          key: "checkInDate",
+          width: "20%",
+          ...getColumnSearchProps('checkInDate'),
+          render: (_, record) => {
+            return formatDate(record.arrivalDate);
+          },
         },
         {
             title: "Ngày trả phòng",
