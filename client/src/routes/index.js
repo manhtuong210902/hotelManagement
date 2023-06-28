@@ -52,6 +52,9 @@ const managerRoutes = [
     { path: config.routes.editRental, component: EditRental, layout: ManagerLayout },
     { path: config.routes.revenuereport, component: RevenueReport, layout: ManagerLayout },
     { path: config.routes.densityreport, component: DensityReport, layout: ManagerLayout },
+    { path: config.routes.bookingByNV, component: BookingManagement, layout: ManagerLayout },
+    { path: config.routes.viewRental, component: ViewRental, layout: ManagerLayout },
+    { path: config.routes.editRental, component: EditRental, layout: ManagerLayout },
 ];
 
 //admin routes
@@ -61,9 +64,6 @@ const adminRoutes = [
     { path: config.routes.listemployee, component: ListEmployee, layout: AdminLayout },
     { path: config.routes.addemployee, component: AddEmployee, layout: AdminLayout },
     { path: config.routes.editemployee, component: UpdateEmployee, layout: AdminLayout },
-    { path: config.routes.bookingByNV, component: BookingManagement, layout: AdminLayout },
-    { path: config.routes.viewRental, component: ViewRental, layout: AdminLayout },
-    { path: config.routes.editRental, component: EditRental, layout: AdminLayout },
 ];
 
 export { publicRoutes, customerRoutes, managerRoutes, adminRoutes };
