@@ -14,7 +14,6 @@ class paymentController {
       
     async capturePaypalOrder(req, res) {
         const { orderID } = req.body;
-        console.log(orderID);
         
         try {
           const captureData = await paypalApi.capturePayment(orderID);

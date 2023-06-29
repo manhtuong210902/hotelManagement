@@ -13,7 +13,7 @@ function routes(app) {
     app.use("/api/book", bookRouter);
     app.use("/api/reviews", reviewRouter);
     app.use("/api/report", reportRouter);
-    app.use("/", paymentsRouter);
+    app.use("/api/payment", paymentsRouter);
 }
 
 module.exports = routes;

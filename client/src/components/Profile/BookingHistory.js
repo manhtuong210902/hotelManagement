@@ -204,13 +204,6 @@ const BookingHistory = () => {
           ...getColumnSearchProps('number')
         },
         {
-          title: "Mã đơn",
-          dataIndex: "_id",
-          key: "_id",
-          width: "15%",
-          ...getColumnSearchProps('number')
-        },
-        {
           title: "Ngày nhận phòng",
           dataIndex: "checkInDate",
           key: "checkInDate",

@@ -14,7 +14,7 @@ const RentalCardSchema = new Schema(
         infoCus: {
             Name: { type: String },
             Email: { type: String },
-            required: true,
+            // required: true,
         },
         room: {
             type: mongoose.Schema.Types.ObjectId,

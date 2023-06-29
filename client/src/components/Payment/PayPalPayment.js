@@ -10,7 +10,7 @@ const PayPalPayment = ({paymentInfo, bill, rentalCard, handleClose}) => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const handleBooking = async (paymentRes) => {
-      if(bill.rentalCard === "")
+      if(rentalCard)
       createRentalCard(dispatch, rentalCard )
       .then((newRental) => 
       {
@@ -57,7 +57,7 @@ const PayPalPayment = ({paymentInfo, bill, rentalCard, handleClose}) => {
       }
     }
     const createOrder = () => {
-        return fetch(`${API_URL}//my-server/create-paypal-order`, {
+        return fetch(`${API_URL}/payment/create-paypal-order`, {
           method: "POST",
            headers: {
             "Content-Type": "application/json",
@@ -72,7 +72,7 @@ const PayPalPayment = ({paymentInfo, bill, rentalCard, handleClose}) => {
 
     const onApprove = async (order) => {
       const {data} = await axios.post(
-        `${API_URL}/my-server/capture-paypal-order`,
+        `${API_URL}/payment/capture-paypal-order`,
         {orderID: order.orderID},
         {
           headers: {
@@ -82,7 +82,7 @@ const PayPalPayment = ({paymentInfo, bill, rentalCard, handleClose}) => {
       );
       if(data){
          await handleBooking(data)
-         handleClose()
+         if(handleClose) handleClose()
       }
   };
 

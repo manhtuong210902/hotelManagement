@@ -31,7 +31,6 @@ const  handleResponse = async(response) => {
 class paypalApi {
     async createOrder(data) {
         const accessToken = await generateAccessToken();
-        console.log('create');
         
         const url = `${base}/v2/checkout/orders`;
         const response = await fetch(url, {
@@ -58,7 +57,6 @@ class paypalApi {
 
   async  capturePayment(orderId) {
     const accessToken = await generateAccessToken();
-    console.log(accessToken);
     
     const url = `${base}/v2/checkout/orders/${orderId}/capture`;
     const response = await fetch(url, {

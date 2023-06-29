@@ -9,8 +9,8 @@ router.get('/config', (req, res) => {
   })
 })
 
-router.post("/my-server/create-paypal-order", paymentController.createPaypalOrder);
-router.post("/my-server/capture-paypal-order", paymentController.capturePaypalOrder);
+router.post("/create-paypal-order", paymentController.createPaypalOrder);
+router.post("/capture-paypal-order", paymentController.capturePaypalOrder);
 
 
 module.exports = router
