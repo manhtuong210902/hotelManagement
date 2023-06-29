@@ -31,6 +31,8 @@ export const createRentalCard =  async (dispatch, rentalObj) => {
         );
 
         if(data.success){
+            console.log(data);
+            
             dispatch(addRentalCard(data.newBill));
             return data.newBill
         }

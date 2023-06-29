@@ -1,5 +1,6 @@
 import { Col, Container, Row } from "react-bootstrap";
 import Profile from "../../components/Profile/Profile";
+import TableAccounts from "./TableAccounts";
 
 function Admin() {
     return (
@@ -9,7 +10,9 @@ function Admin() {
                     <Col lg={4}>
                         <Profile />
                     </Col>
-                    <Col lg={8}>{"admin"}</Col>
+                    <Col lg={8}>
+                        <TableAccounts />
+                    </Col>
                 </Row>
             </Container>
         </div>

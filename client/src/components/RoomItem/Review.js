@@ -4,12 +4,16 @@ import { Form, FloatingLabel, Spinner, Button, Alert } from "react-bootstrap";
 import { API_URL } from "../../utils/constants";
 import ReviewItem from "./ReviewItem";
 import { Star, StarFill } from "react-bootstrap-icons";
+import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
+import config from "../../config";
 
 function Review({ roomId }) {
     const [reviews, setReviews] = useState([]);
     const [reviewInput, setReviewInput] = useState("");
     const [rating, setRating] = useState(0);
     const [loading, setLoading] = useState(false);
+    const user = useSelector((state) => state.auth.user);
 
     useEffect(() => {
         setLoading(true);
@@ -27,6 +31,11 @@ function Review({ roomId }) {
 
     const handleSubmitReview = async (e) => {
         e.preventDefault();
+        if (rating === 0) {
+            alert("Bạn chưa chọn số sao đánh giá !!!");
+            return;
+        }
+
         const res = await axios.post(`${API_URL}/reviews/add`, {
             roomId: roomId,
             text: reviewInput,
@@ -87,23 +96,32 @@ function Review({ roomId }) {
             </div>
             <div className="mt-3">
                 <h5 className="text-primary">Để lại đánh giá của bạn</h5>
-                <Form className="mt-3" onSubmit={handleSubmitReview}>
-                    <div className="rating-input">{renderStars()}</div>
-                    <FloatingLabel label="Viết đánh giá">
-                        <Form.Control
-                            id="review"
-                            as="textarea"
-                            style={{ height: "100px" }}
-                            value={reviewInput}
-                            onChange={(e) => {
-                                setReviewInput(e.target.value);
-                            }}
-                        />
-                        <Button type="submit" className="mt-3">
-                            Gửi đánh giá
-                        </Button>
-                    </FloatingLabel>
-                </Form>
+                {user ? (
+                    <Form className="mt-3" onSubmit={handleSubmitReview}>
+                        <div className="rating-input">{renderStars()}</div>
+                        <FloatingLabel label="Viết đánh giá">
+                            <Form.Control
+                                id="review"
+                                as="textarea"
+                                style={{ height: "100px" }}
+                                value={reviewInput}
+                                onChange={(e) => {
+                                    setReviewInput(e.target.value);
+                                }}
+                            />
+                            <Button type="submit" className="mt-3">
+                                Gửi đánh giá
+                            </Button>
+                        </FloatingLabel>
+                    </Form>
+                ) : (
+                    <p className="text-danger">
+                        <Link to={config.routes.login} className="text-danger fw-bold">
+                            Đăng nhập
+                        </Link>{" "}
+                        để đánh giá phòng này
+                    </p>
+                )}
             </div>
         </div>
     );

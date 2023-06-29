@@ -29,14 +29,14 @@ import DensityReport from "../pages/DensityReport/DensityReport";
 const publicRoutes = [
     { path: config.routes.login, component: Login, layout: AuthLayout },
     { path: config.routes.register, component: Register, layout: AuthLayout },
-];
-
-// //customer routes
-const customerRoutes = [
     { path: config.routes.home, component: Home, layout: CustomerLayout },
     { path: config.routes.rooms, component: Rooms, layout: CustomerLayout },
     { path: config.routes.search, component: Search, layout: CustomerLayout },
     { path: config.routes.detail, component: Details, layout: CustomerLayout },
+];
+
+// //customer routes
+const customerRoutes = [
     { path: config.routes.profile, component: ProfileCus, layout: CustomerLayout },
     { path: config.routes.pay, component: Pay, layout: CustomerLayout },
 ];
@@ -50,10 +50,11 @@ const managerRoutes = [
     { path: config.routes.bookingByNV, component: BookingManagement, layout: ManagerLayout },
     { path: config.routes.viewRental, component: ViewRental, layout: ManagerLayout },
     { path: config.routes.editRental, component: EditRental, layout: ManagerLayout },
-
     { path: config.routes.revenuereport, component: RevenueReport, layout: ManagerLayout },
     { path: config.routes.densityreport, component: DensityReport, layout: ManagerLayout },
-
+    { path: config.routes.bookingByNV, component: BookingManagement, layout: ManagerLayout },
+    { path: config.routes.viewRental, component: ViewRental, layout: ManagerLayout },
+    { path: config.routes.editRental, component: EditRental, layout: ManagerLayout },
 ];
 
 //admin routes
@@ -63,9 +64,6 @@ const adminRoutes = [
     { path: config.routes.listemployee, component: ListEmployee, layout: AdminLayout },
     { path: config.routes.addemployee, component: AddEmployee, layout: AdminLayout },
     { path: config.routes.editemployee, component: UpdateEmployee, layout: AdminLayout },
-    { path: config.routes.bookingByNV, component: BookingManagement, layout: AdminLayout },
-    { path: config.routes.viewRental, component: ViewRental, layout: AdminLayout },
-    { path: config.routes.editRental, component: EditRental, layout: AdminLayout },
 ];
 
 export { publicRoutes, customerRoutes, managerRoutes, adminRoutes };

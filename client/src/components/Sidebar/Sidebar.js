@@ -88,7 +88,7 @@ function Sidebar() {
                     </Button>
                 </div>
                 <li className="border-top my-3"></li>
-                <Accordion defaultActiveKey={["0"]} alwaysOpen className="mb-2">
+                <Accordion className="mb-2" defaultActiveKey="0">
                     <Accordion.Item eventKey="0">
                         <Accordion.Header>Quản lý đặt phòng</Accordion.Header>
                         <Accordion.Body>
@@ -105,10 +105,8 @@ function Sidebar() {
                             </ListGroup>
                         </Accordion.Body>
                     </Accordion.Item>
-                </Accordion>
 
-                <Accordion className="mb-2">
-                    <Accordion.Item>
+                    <Accordion.Item eventKey="1">
                         <Accordion.Header>Quản lý phòng</Accordion.Header>
                         <Accordion.Body>
                             <ListGroup>
@@ -124,10 +122,8 @@ function Sidebar() {
                             </ListGroup>
                         </Accordion.Body>
                     </Accordion.Item>
-                </Accordion>
 
-                <Accordion defaultActiveKey={["0"]} alwaysOpen className="mb-2">
-                    <Accordion.Item eventKey="0">
+                    <Accordion.Item eventKey="2">
                         <Accordion.Header>Quản lý báo cáo</Accordion.Header>
                         <Accordion.Body>
                             <ListGroup>
@@ -144,12 +140,10 @@ function Sidebar() {
                             </ListGroup>
                         </Accordion.Body>
                     </Accordion.Item>
-                </Accordion>
 
-                {user.isAdmin && (
-                    <>
-                        <Accordion className="mb-2">
-                            <Accordion.Item>
+                    {user.isAdmin && (
+                        <>
+                            <Accordion.Item eventKey="3">
                                 <Accordion.Header>Quản lý khách hàng</Accordion.Header>
                                 <Accordion.Body>
                                     <ListGroup>
@@ -161,10 +155,8 @@ function Sidebar() {
                                     </ListGroup>
                                 </Accordion.Body>
                             </Accordion.Item>
-                        </Accordion>
 
-                        <Accordion>
-                            <Accordion.Item>
+                            <Accordion.Item eventKey="4">
                                 <Accordion.Header>Quản lý nhân viên</Accordion.Header>
                                 <Accordion.Body>
                                     <ListGroup>
@@ -180,9 +172,9 @@ function Sidebar() {
                                     </ListGroup>
                                 </Accordion.Body>
                             </Accordion.Item>
-                        </Accordion>
-                    </>
-                )}
+                        </>
+                    )}
+                </Accordion>
             </ul>
         </div>
     );
