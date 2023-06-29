@@ -11,8 +11,9 @@ function PrivateRoute({ allowedRoles }) {
         loaderUser(dispatch);
     }, [dispatch]);
     const roles = useSelector((state) => state.auth.roles);
+    console.log(roles);
 
-    return roles.find((role) => allowedRoles?.includes(role)) ? <Outlet /> : <Navigate to={config.routes.home} />;
+    return roles.find((role) => allowedRoles?.includes(role)) ? <Outlet /> : <Navigate to={config.routes.login} />;
 }
 
 export default PrivateRoute;

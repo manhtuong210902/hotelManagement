@@ -267,6 +267,23 @@ class userController {
         }
     }
 
+    async getFullAccount(req, res, next) {
+        try {
+            const accounts = await User.find({}).select("-password");
+
+            return res.json({
+                success: true,
+                accounts,
+            });
+        } catch (error) {
+            console.log(error);
+            return res.status(500).json({
+                success: false,
+                message: "Internal server error",
+            });
+        }
+    }
+
     async getUserById(req, res, next) {
         try {
             const account = await User.findOne({ _id: req.params.id }).select("-password");

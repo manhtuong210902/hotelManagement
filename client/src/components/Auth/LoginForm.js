@@ -27,8 +27,6 @@ function LoginForm() {
             setError("Sai email hoặc mật khẩu");
             return;
         }
-
-        navigate(from, { replace: true });
     };
 
     return (

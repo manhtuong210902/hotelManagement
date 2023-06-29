@@ -9,9 +9,11 @@ function AuthLayout({ children }) {
         if (user.isManager) {
             return <Navigate to={config.routes.manager} />;
         } else if (user.isAdmin) {
+            console.log("admin");
             return <Navigate to={config.routes.admin} />;
         }
 
+        console.log("not admin");
         return <Navigate to={config.routes.home} />;
     }
 

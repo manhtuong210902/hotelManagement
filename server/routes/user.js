@@ -12,6 +12,8 @@ router.get("/customer", authenToken, userController.getCustomer);
 
 router.get("/employee", authenToken, userController.getEmployee);
 
+router.get("/account", authenToken, userController.getFullAccount);
+
 router.get("/:id", authenToken, userController.getUserById);
 
 router.post("/add/employee", authenToken, userController.addEmployee);
