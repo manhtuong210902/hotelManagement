@@ -6,7 +6,7 @@ function Banner() {
             <div className="overlay"></div>
 
             <div className="banner_details mt-5">
-                <h1>HCMUS HOTEL</h1>
+                <h1>KHÁCH SẠN ÚKS</h1>
                 <p>
                     <strong>Địa Chỉ</strong>: Đường 38, Nguyễn Thị Minh Khai, TP Dĩ An
                 </p>

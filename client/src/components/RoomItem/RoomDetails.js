@@ -1,6 +1,6 @@
 import { Button, Card, Col, Container, Row, Spinner, Tab, Tabs, Modal, Form, FormControl } from "react-bootstrap";
 import FormSearch from "../Rooms/FromSearch";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { API_URL } from "../../utils/constants";
@@ -8,6 +8,8 @@ import { useSelector, useDispatch } from "react-redux";
 import { createRentalCard, createBill } from "../../redux/bookingApi";
 import PayPalPayment from "../Payment/PayPalPayment";
 import Review from "./Review";
+import getCurrentDate from "../../utils/getCurrentDate";
+import config from "../../config";
 
 function RoomDetails() {
     const { id } = useParams();
@@ -15,6 +17,7 @@ function RoomDetails() {
     const [room, setRoom] = useState(null);
     const [payment, setPayment] = useState("later_money");
     const [initialDate, setInitialDate] = useState("");
+    const [isDuplicate, setIsDuplicate] = useState(false);
     const [paymentInfo, setPaymentInfo] = useState({
         description: "Booking at ÚKS",
         cost: 0,
@@ -29,10 +32,10 @@ function RoomDetails() {
     const handleClose = () => setShow(false);
 
     const [rentalCard, setRentalCard] = useState({
-        user: user._id,
-        booker: user._id,
+        user: user?._id || null,
+        booker: user?._id || null,
         room: id,
-        arrivalDate: "",
+        arrivalDate: getCurrentDate("-"),
         numDays: 1,
     });
 
@@ -74,6 +77,23 @@ function RoomDetails() {
         fetchApi();
     }, [id]);
 
+    useEffect(() => {
+        const fetchApi = async () => {
+            if (!rentalCard.arrivalDate || rentalCard.numDays <= 0) {
+                return;
+            }
+
+            const response = await axios.post(`${API_URL}/book/check-booking`, {
+                arrivalDate: rentalCard.arrivalDate,
+                numDays: rentalCard.numDays,
+                roomId: id,
+            });
+
+            setIsDuplicate(response.data.isDuplicate);
+        };
+        fetchApi();
+    }, [id, rentalCard]);
+
     const calTotalPrice = (value, num) => value.extraPrice + num * value.unitPrice;
 
     const handleBooking = async () => {
@@ -96,6 +116,11 @@ function RoomDetails() {
     const handlePayment = (e) => {
         setPayment(e.target.value);
         setBill({ ...bill, paymentMethod: e.target.value });
+    };
+
+    const handleChangeDate = (e) => {
+        setInitialDate(e.target.value);
+        setRentalCard({ ...rentalCard, arrivalDate: e.target.value });
     };
 
     const changeNumOfDay = (num) => {
@@ -124,7 +149,7 @@ function RoomDetails() {
                                 <Card>
                                     <Card.Img variant="top" src={room.image} />
                                 </Card>
-                                <h4 className="mt-3 text-primary">Phòng 101</h4>
+                                <h4 className="mt-3 text-primary">Phòng {room.number}</h4>
                                 <Tabs defaultActiveKey="description" className="mb-3 mt-3">
                                     <Tab eventKey="description" title="Mô tả">
                                         <p>
@@ -159,35 +184,44 @@ function RoomDetails() {
                         <div className="p-3 border border-1 rounded-2">
                             <div>
                                 <h6 className="mb-4 text-primary">THÔNG TIN KHÁCH HÀNG</h6>
-                                <p>
-                                    {"> "}
-                                    <strong>Người đặt</strong>: {user.fullname}
-                                </p>
-                                <p>
-                                    {"> "}
-                                    <strong>Email</strong>: {user.email}
-                                </p>
+                                {user ? (
+                                    <>
+                                        <p>
+                                            {"> "}
+                                            <strong>Người đặt</strong>: {user.fullname}
+                                        </p>
+                                        <p>
+                                            {"> "}
+                                            <strong>Email</strong>: {user.email}
+                                        </p>
+                                    </>
+                                ) : (
+                                    <p className="text-danger">
+                                        <Link to={config.routes.login} className="text-danger fw-bold">
+                                            Đăng nhập
+                                        </Link>{" "}
+                                        để đặt phòng
+                                    </p>
+                                )}
                             </div>
                             <div className="mt-4">
                                 <h6 className="mb-4 text-primary">CHI TIẾT</h6>
                                 <div>
                                     <p>
                                         {"> "}
-                                        <strong>Ngày thuê</strong>:
+                                        <strong>Chọn ngày thuê</strong>:
                                         <input
                                             type="date"
+                                            min={getCurrentDate("-")}
                                             value={initialDate}
-                                            onChange={(e) => {
-                                                setInitialDate(e.target.value);
-                                                setRentalCard({ ...rentalCard, arrivalDate: e.target.value });
-                                            }}
+                                            onChange={handleChangeDate}
                                         />
                                     </p>
 
                                     <p className="d-flex align-items-center">
                                         <label className="me-2">
                                             {"> "}
-                                            <strong>Số ngày thuê phòng</strong>
+                                            <strong>Chọn Số ngày thuê</strong>:
                                         </label>
                                         <FormControl
                                             size="sm"
@@ -235,23 +269,45 @@ function RoomDetails() {
                                         </div>
                                     </Form>
 
-                                    <div className="border-top pt-3 pb-2">
-                                        <p className="mb-3 text-danger">
-                                            <strong>THÀNH TIỀN {bill.totalPrice.toLocaleString("vi-VN")}đ</strong>
-                                        </p>
-
-                                        {payment === "paypal" ? (
-                                            <PayPalPayment
-                                                paymentInfo={paymentInfo}
-                                                bill={bill}
-                                                rentalCard={rentalCard}
-                                            />
-                                        ) : (
-                                            <Button onClick={() => setShow(true)} className="w-100">
-                                                ĐẶT PHÒNG
-                                            </Button>
-                                        )}
-                                    </div>
+                                    {isDuplicate ? (
+                                        <div className="border-top pt-3 pb-2">
+                                            <p className="text-danger text-center">
+                                                Khoảng thời gian này <br />
+                                                phòng <b>{room?.number}</b> đã có người đặt !!
+                                            </p>
+                                        </div>
+                                    ) : (
+                                        <div className="border-top pt-3 pb-2">
+                                            {user ? (
+                                                <>
+                                                    {" "}
+                                                    <p className="mb-3 text-danger">
+                                                        <strong>
+                                                            THÀNH TIỀN {bill.totalPrice.toLocaleString("vi-VN")}đ
+                                                        </strong>
+                                                    </p>
+                                                    {payment === "paypal" ? (
+                                                        <PayPalPayment
+                                                            paymentInfo={paymentInfo}
+                                                            bill={bill}
+                                                            rentalCard={rentalCard}
+                                                        />
+                                                    ) : (
+                                                        <Button onClick={() => setShow(true)} className="w-100">
+                                                            ĐẶT PHÒNG
+                                                        </Button>
+                                                    )}
+                                                </>
+                                            ) : (
+                                                <p className="text-danger">
+                                                    <Link to={config.routes.login} className="text-danger fw-bold">
+                                                        Đăng nhập
+                                                    </Link>{" "}
+                                                    để đặt phòng
+                                                </p>
+                                            )}
+                                        </div>
+                                    )}
                                 </div>
                             </div>
                         </div>

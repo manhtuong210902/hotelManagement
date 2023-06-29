@@ -5,6 +5,6 @@ const authenToken = require("../middlewares/auth");
 const reviewController = require("../controllers/review.c");
 
 router.post("/add", authenToken, reviewController.add);
-router.get("/:id", authenToken, reviewController.getByRoomId);
+router.get("/:id", reviewController.getByRoomId);
 
 module.exports = router;
