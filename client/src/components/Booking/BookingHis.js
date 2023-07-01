@@ -15,12 +15,13 @@ function BookingHis() {
     const [users, setUsers] = useState([])
     const [rooms, setRooms] = useState([])
     const [show, setShow] = useState(false);
+    const [showDetail, setShowDetail] = useState(false);
     const [type, setType] = useState("Tất cả")
     const [api, contextHolder] = notification.useNotification();
     const title = ["Tất cả","Nhận phòng hôm nay","Đã nhận phòng"]
-    const openNotification = () => {
+    const openNotification = (message) => {
       api.info({
-        message: `Khách hàng chưa thanh toán`
+        message
       });
     };
 
@@ -229,7 +230,7 @@ function BookingHis() {
       {
         title: "Phòng",
         key: "ph",
-        width: "10%",
+        width: "5%",
         render: (_, record) => {
           const room = rooms.filter(room => room._id === record.room)
           return room[0].number
@@ -238,7 +239,7 @@ function BookingHis() {
       {
         title: "Khách hàng",
         key: "kh",
-        width: "10%",
+        width: "15%",
         render: (_, record) => {
           const user = users.filter(us => us._id === record.user)
           const billUser = bills.filter(bill => bill.rentalCard === record._id)
@@ -249,7 +250,7 @@ function BookingHis() {
         title: "Ngày nhận phòng",
         dataIndex: "checkInDate",
         key: "checkInDate",
-        width: "20%",
+        width: "10%",
         // ...getColumnSearchProps('checkInDate'),
         render: (_, record) => {
           return formatDate(record.arrivalDate);
@@ -259,7 +260,7 @@ function BookingHis() {
         title: "Check-in",
         dataIndex: "isCheckIn",
         key: "isCheckIn",
-        width: "15%",
+        width: "10%",
         render: (_, record) => {
           const billUser = bills.filter(bill => bill.rentalCard === record._id)
           const user = users.filter(us => us._id === record.user)
@@ -339,7 +340,7 @@ function BookingHis() {
                         onClick={() => {
                           if(billUser[0].isPaid)
                             CheckIn(record._id)
-                          else openNotification()
+                          else openNotification(`Khách hàng chưa thanh toán`)
                         }}
                       >
                           Check-in
@@ -357,7 +358,7 @@ function BookingHis() {
         title: "Check-out",
         dataIndex: "isCheckOut",
         key: "isCheckOut",
-        width: "15%",
+        width: "10%",
         render: (_, record) => {
           if(!record.isCheckOut && record.isCheckIn)
             return (
@@ -390,7 +391,7 @@ function BookingHis() {
               <div className={record.isPaid ? "text-center" : ""} style={{ display: "inline" }}>
                   <Button
                       onClick={() => {
-                          setShow({ ["show_" + record._id]: true });
+                        setShowDetail({ ["show_" + record._id]: true });
                       }}
                   >
                       Thông tin chi tiết
@@ -398,8 +399,8 @@ function BookingHis() {
               </div>
 
               <Modal
-                  show={show["show_" + record._id]}
-                  onHide={() => setShow({ ["show_" + record._id]: false })}
+                  show={showDetail["show_" + record._id]}
+                  onHide={() => setShowDetail({ ["show_" + record._id]: false })}
                   aria-labelledby="contained-modal-title-vcenter"
                   centered
               >
