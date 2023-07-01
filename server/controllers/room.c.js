@@ -1,4 +1,6 @@
 const Room = require("../models/room.m");
+const RentalCard = require("../models/rentalCard.m");
+
 class roomController {
     //@route [GET]: api/rooms
     //@desc get full room
@@ -146,10 +148,53 @@ class roomController {
         try {
             const { id } = req.body;
             const room = await Room.find({ number: id });
-            
+
             return res.json({
                 success: true,
                 room,
+            });
+        } catch (error) {
+            console.log(error);
+            return res.status(500).json({
+                success: false,
+                message: "Internal server error",
+            });
+        }
+    }
+
+    async getRoomsWithVacantStatus(req, res, next) {
+        try {
+            const currentDate = new Date();
+
+            const rooms = await Room.find();
+
+            const roomsWithVacantStatus = [];
+
+            for (const room of rooms) {
+                const rentalCards = await RentalCard.find({ room: room._id, status: true });
+
+                let isVacant = true;
+
+                for (const rentalCard of rentalCards) {
+                    const arrivalDate = new Date(rentalCard.arrivalDate);
+                    const endDate = new Date(rentalCard.arrivalDate);
+                    endDate.setDate(endDate.getDate() + rentalCard.numDays);
+
+                    if (endDate > currentDate && currentDate > arrivalDate) {
+                        isVacant = false;
+                        break;
+                    }
+                }
+
+                roomsWithVacantStatus.push({
+                    room,
+                    vacant: isVacant,
+                });
+            }
+
+            return res.json({
+                success: true,
+                roomsWithVacantStatus,
             });
         } catch (error) {
             console.log(error);

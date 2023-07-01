@@ -10,6 +10,7 @@ const routes = {
     addroom: "/manager/addroom",
     editroom: "/manager/editroom",
     listroom: "/manager/listroom",
+    liststatus: "/manager/liststatus",
     admin: "/admin",
     pay: "/pay",
     listcus: "/admin/listcus",

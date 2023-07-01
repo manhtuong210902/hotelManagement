@@ -256,10 +256,7 @@ class bookController {
     async updateBillByEmp(req, res) {
         try {
             const id = req.body.id;
-            const rentalUpdate = await Bill.updateOne(
-                { _id: id },
-                {  isPaid: true, paidAt: new Date() }
-            );
+            const rentalUpdate = await Bill.updateOne({ _id: id }, { isPaid: true, paidAt: new Date() });
             const updateBill = await Bill.findById(id);
 
             if (updateBill)
@@ -278,7 +275,7 @@ class bookController {
 
     async getRentalCardCheckIn(req, res) {
         try {
-            const rentalCard = await RentalCard.find({ isCheckOut: false, status: true, });
+            const rentalCard = await RentalCard.find({ isCheckOut: false, status: true });
             const bill = await Bill.find();
             const users = await User.find();
 
@@ -351,23 +348,31 @@ class bookController {
 
     async checkBooking(req, res) {
         try {
-            const { arrivalDate, numDays, roomId } = req.body;
+            let { arrivalDate, numDays, roomId } = req.body;
 
+            arrivalDate = new Date(arrivalDate);
             const endDate = new Date(arrivalDate);
-            endDate.setDate(endDate.getDate() + numDays - 1);
+            endDate.setDate(endDate.getDate() + numDays);
 
             const existingBooking = await RentalCard.findOne({
                 room: roomId,
-                arrivalDate: { $lte: new Date(arrivalDate) },
-                $expr: {
-                    $gte: [
-                        { $add: ["$arrivalDate", { $multiply: ["$numDays", 24 * 60 * 60 * 1000] }] },
-                        new Date(arrivalDate),
-                    ],
-                },
             });
 
-            if (existingBooking) {
+            if (!existingBooking) {
+                res.json({ isDuplicate: false });
+            }
+
+            const exitArrivalDate = new Date(existingBooking.arrivalDate);
+            const exitEndDate = new Date(existingBooking.arrivalDate);
+            exitEndDate.setDate(exitEndDate.getDate() + existingBooking.numDays);
+
+            console.log(arrivalDate, endDate);
+            console.log(exitArrivalDate, exitEndDate);
+
+            if (
+                (arrivalDate >= exitArrivalDate && arrivalDate <= exitEndDate) ||
+                (endDate >= exitArrivalDate && endDate <= exitEndDate)
+            ) {
                 res.json({ isDuplicate: true });
             } else {
                 res.json({ isDuplicate: false });
@@ -386,15 +391,15 @@ class bookController {
             const today = new Date();
             const startOfToday = new Date(today.getFullYear(), today.getMonth(), today.getDate());
             const endOfToday = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1);
-            const rentalCard = await RentalCard.find({ 
+            const rentalCard = await RentalCard.find({
                 isCheckIn: false,
                 status: true,
                 arrivalDate: {
                     $gte: startOfToday,
-                    $lt: endOfToday
-                } 
+                    $lt: endOfToday,
+                },
             });
-            
+
             const bill = await Bill.find();
             const users = await User.find();
 
@@ -418,15 +423,15 @@ class bookController {
             const today = new Date();
             const startOfToday = new Date(today.getFullYear(), today.getMonth(), today.getDate());
             const endOfToday = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1);
-            const rentalCard = await RentalCard.find({ 
+            const rentalCard = await RentalCard.find({
                 isCheckIn: true,
                 isCheckOut: false,
                 status: true,
                 arrivalDate: {
                     $gte: startOfToday,
-                } 
+                },
             });
-            
+
             const bill = await Bill.find();
             const users = await User.find();
 

@@ -25,6 +25,7 @@ import EditRental from "../pages/BookingManagement/EditRental";
 import ViewRental from "../pages/BookingManagement/ViewRental";
 import RevenueReport from "../pages/RevenueReport/RevenueReport";
 import DensityReport from "../pages/DensityReport/DensityReport";
+import ListStatusRoom from "../pages/ListStatusRoom/ListStatusRoom";
 //public routes
 const publicRoutes = [
     { path: config.routes.login, component: Login, layout: AuthLayout },
@@ -46,6 +47,7 @@ const managerRoutes = [
     { path: config.routes.manager, component: Manage, layout: ManagerLayout },
     { path: config.routes.addroom, component: AddRoom, layout: ManagerLayout },
     { path: config.routes.listroom, component: ListRoom, layout: ManagerLayout },
+    { path: config.routes.liststatus, component: ListStatusRoom, layout: ManagerLayout },
     { path: config.routes.editroom, component: UpdateRoom, layout: ManagerLayout },
     { path: config.routes.bookingByNV, component: BookingManagement, layout: ManagerLayout },
     { path: config.routes.viewRental, component: ViewRental, layout: ManagerLayout },

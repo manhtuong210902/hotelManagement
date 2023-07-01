@@ -18,7 +18,7 @@ function Sidebar() {
             id: 2,
             name: "Xem đơn đặt phòng",
             path: config.routes.viewRental,
-        }
+        },
     ];
 
     const roomManagamentList = [
@@ -34,6 +34,11 @@ function Sidebar() {
         },
         {
             id: 3,
+            name: "Trạng thái phòng",
+            path: config.routes.liststatus,
+        },
+        {
+            id: 4,
             name: "Chỉnh sửa phòng",
             path: config.routes.editroom,
         },

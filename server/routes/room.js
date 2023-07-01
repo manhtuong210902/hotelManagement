@@ -8,6 +8,7 @@ const billController = require("../controllers/book.c");
 router.get("/", roomController.getFull);
 router.post("/add", authenToken, roomController.add);
 router.get("/search", roomController.searchRoom);
+router.get("/status", authenToken, roomController.getRoomsWithVacantStatus);
 router.get("/:id", roomController.getById);
 
 router.delete("/:id", authenToken, roomController.delete);
