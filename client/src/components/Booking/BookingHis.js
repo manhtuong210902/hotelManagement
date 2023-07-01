@@ -220,11 +220,20 @@ function BookingHis() {
 
     const columnsRental = [
       {
-        title: "#",
+        title: "Mã phiếu đặt phòng",
         dataIndex: "_id",
         key: "_id",
         width: "10%",
         ...getColumnSearchProps('_id')
+      },
+      {
+        title: "Phòng",
+        key: "ph",
+        width: "10%",
+        render: (_, record) => {
+          const room = rooms.filter(room => room._id === record.room)
+          return room[0].number
+        }
       },
       {
         title: "Khách hàng",
@@ -365,6 +374,75 @@ function BookingHis() {
           else if(!record.isCheckIn)
               return ""
           else return "Đã check-out"
+        },
+      },
+      {
+        title: "",
+        dataIndex: "isCheckIn",
+        key: "isCheckIn",
+        width: "15%",
+        render: (_, record) => {
+          const billUser = bills.filter(bill => bill.rentalCard === record._id)
+          const user = users.filter(us => us._id === record.user)
+          const room = rooms.filter(room => room._id === record.room)
+            return (
+              <>
+              <div className={record.isPaid ? "text-center" : ""} style={{ display: "inline" }}>
+                  <Button
+                      onClick={() => {
+                          setShow({ ["show_" + record._id]: true });
+                      }}
+                  >
+                      Thông tin chi tiết
+                  </Button>
+              </div>
+
+              <Modal
+                  show={show["show_" + record._id]}
+                  onHide={() => setShow({ ["show_" + record._id]: false })}
+                  aria-labelledby="contained-modal-title-vcenter"
+                  centered
+              >
+                  <Modal.Header closeButton>
+                      <Modal.Title>Chi tiết hóa đơn</Modal.Title>
+                  </Modal.Header>
+                  <Modal.Body>
+                      <h4 style={{ fontSize: "20px" }}>Thông tin khách hàng:</h4>
+                      <p style={{ fontSize: "15px" , paddingLeft:"20px"}}>
+                          <strong>Số căn cước công dân:</strong> {user[0] && user[0].cccd || billUser[0] && billUser[0].paymentResult.cccd}
+                      </p>
+                      <p style={{ fontSize: "15px" , paddingLeft:"20px"}}>
+                          <strong>Họ tên khách hàng:</strong> {user[0] && user[0].fullname || billUser[0] && billUser[0].paymentResult.name}
+                      </p>
+                      <h4 style={{ fontSize: "20px" }}>Thông tin đặt phòng:</h4>
+                      <p style={{ fontSize: "15px" , paddingLeft:"20px"}}>
+                          <strong>Ngày check-in:</strong> {formatDate(record.arrivalDate)}
+                      </p>
+                      <p style={{ fontSize: "15px" , paddingLeft:"20px"}}>
+                          <strong>Số ngày thuê phòng:</strong> {record.numDays}
+                      </p>
+                      <p style={{ fontSize: "15px", paddingLeft:"20px" }}>
+                          <strong>Tổng tiền:</strong> {billUser[0].totalPrice}
+                      </p>
+                      <p style={{ fontSize: "15px", paddingLeft:"20px" }}>
+                          <strong>Tình trạng thanh toán:</strong> {billUser[0].isPaid?"Đã thanh toán":"Chưa thanh toán"}
+                      </p>
+                      <h4 style={{ fontSize: "20px" }}>Thông tin phòng:</h4>
+                      <p style={{ fontSize: "15px", paddingLeft:"20px" }}>
+                          <strong>Số phòng:</strong> {room[0] && room[0].name}
+                      </p>
+                      <p style={{ fontSize: "15px", paddingLeft:"20px" }}>
+                          <strong>Loại phòng:</strong> {room[0] && room[0].type}
+                      </p>
+                      <p style={{ fontSize: "15px", paddingLeft:"20px" }}>
+                          <strong>Sức chứa:</strong> {room[0] && room[0].capacity}
+                      </p>
+                      
+                  </Modal.Body>
+              </Modal>
+
+          </>)
+            
         },
       },
   ];

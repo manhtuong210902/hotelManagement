@@ -95,6 +95,7 @@ const BookingByHotel = () => {
             paymentResult: {
                 email_address: values.Email,
                 name: values.name,
+                cccd: values.cccd,
             },
         });
     };
@@ -119,7 +120,6 @@ const BookingByHotel = () => {
         setSearch(values.note);
         
     };
-console.log(searchResult);
 
     return (
         <div>
@@ -192,6 +192,17 @@ console.log(searchResult);
                             <Form.Item
                                 name="Email"
                                 label="Email:"
+                                rules={[
+                                    {
+                                        required: true,
+                                    },
+                                ]}
+                            >
+                                <Input />
+                            </Form.Item>
+                            <Form.Item
+                                name="cccd"
+                                label="Căn cước công dân:"
                                 rules={[
                                     {
                                         required: true,
