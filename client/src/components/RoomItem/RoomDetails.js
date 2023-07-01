@@ -98,7 +98,7 @@ function RoomDetails() {
 
     const handleBooking = async () => {
         createRentalCard(dispatch, rentalCard).then((newRental) => {
-            setBill({ ...bill, rentalCard: newRental._id });
+            setBill({ ...bill, rentalCard: newRental?._id });
             const Bill = { ...bill, number: room.number, rentalCard: newRental._id, bill_rental: [newRental] };
 
             createBill(dispatch, Bill).then((success) => {
