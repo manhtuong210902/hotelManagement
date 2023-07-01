@@ -6,11 +6,13 @@ import { API_URL } from "../../utils/constants";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { createRentalCard, createBill } from "../../redux/bookingApi";
+import formatDate from "../../utils/formatDate";
 
 const BookingByHotel = () => {
     const user = useSelector((state) => state.auth.user);
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const [isDuplicate, setIsDuplicate] = useState(false);
 
     const [search, setSearch] = useState("");
     const [isCheckOut, setIsCheckOut] = useState(false);
@@ -104,9 +106,20 @@ const BookingByHotel = () => {
         else setSearchResult({ number: "", type: "", capacity: "", price: "" });
     };
     const onSearch = async (values) => {
-        await searchRoom(values.note);
+        await searchRoom(values.note)
+        .then(async res  => {
+                const response = await axios.post(`${API_URL}/book/check-booking`, {
+                    arrivalDate: new Date(),
+                    numDays:1,
+                    roomId: searchResult._id,
+                });
+    
+                setIsDuplicate(response.data.isDuplicate);
+        })
         setSearch(values.note);
+        
     };
+console.log(searchResult);
 
     return (
         <div>
@@ -139,6 +152,7 @@ const BookingByHotel = () => {
                     </Form.Item>
                 </Form>
             </div>
+            { searchResult ?
             <Col className="my-3">
                 <Card>
                     <Card.Header className="text-primary">Phiếu đặt phòng</Card.Header>
@@ -215,6 +229,14 @@ const BookingByHotel = () => {
                                     </p>
                                 </>
                             )}
+                            {isDuplicate ? (
+                                        <div className="border-top pt-3 pb-2">
+                                            <p className="text-danger text-center">
+                                                Khoảng thời gian này <br />
+                                                phòng <b>{searchResult?.number}</b> đã có người đặt !!
+                                            </p>
+                                        </div>
+                                    ):
 
                             <Form.Item {...tailLayout}>
                                 <Button type="primary" htmlType="submit">
@@ -229,11 +251,12 @@ const BookingByHotel = () => {
                                 >
                                     Đặt phòng
                                 </Button>
-                            </Form.Item>
+                            </Form.Item> }
                         </Form>
                     </Card.Body>
                 </Card>
-            </Col>
+            </Col> : <span>Sai mã phòng</span>
+            }
         </div>
     );
 };

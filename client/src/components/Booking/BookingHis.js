@@ -1,22 +1,30 @@
 import React, {useState,useRef, useEffect} from 'react'
-import { PencilSquare, PlusCircle } from "react-bootstrap-icons";
-import { getFullRooms } from "../../redux/apiRequests";
+import { PlusCircle } from "react-bootstrap-icons";
 import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import formatDate from "../../utils/formatDate";
 import axios from 'axios'
 import { API_URL } from "../../utils/constants";
-import { Button, Input, Space, Table  } from "antd";
+import { Button, Input, Space, Table, notification, Segmented  } from "antd";
 import { Search } from 'react-bootstrap-icons';
-
-
+import { Modal } from "react-bootstrap";
 
 function BookingHis() {
     const [rentals, setRentals] = useState([])
     const [bills, setBills] = useState([])
     const [users, setUsers] = useState([])
+    const [rooms, setRooms] = useState([])
+    const [show, setShow] = useState(false);
+    const [type, setType] = useState("Tất cả")
+    const [api, contextHolder] = notification.useNotification();
+    const title = ["Tất cả","Nhận phòng hôm nay","Đã nhận phòng"]
+    const openNotification = () => {
+      api.info({
+        message: `Khách hàng chưa thanh toán`
+      });
+    };
+
     const dispatch = useDispatch();
-    const navigate = useNavigate();
     const config = {
         withCredentials: true,
         headers: {
@@ -55,12 +63,30 @@ function BookingHis() {
         })
         setRentals(newrental)
     })
-}
+  }
+
+  const updateBill = async (id, rentalId) => {
+    axios.post(
+        `${API_URL}/book/update-bill-by-emp`,
+        {id},
+        config
+    )
+    .then(res => {
+      const newBill = bills.map(rental =>{
+        if(rental._id === id) 
+          return {...rental, isPaid: true}
+        return rental
+      })
+      setBills(newBill)
+      CheckIn(rentalId)
+    })
+  }
 
     useEffect( () => {
       const getRentalCard = async () => {
+        const path = type === "Tất cả" ? 'in' : type === "Nhận phòng hôm nay" ? "in-today" : "out"
           axios.post(
-              `${API_URL}/book/get-rental-check-in`,
+              `${API_URL}/book/get-rental-check-${path}`,
               config
           )
           .then(res => {
@@ -72,19 +98,16 @@ function BookingHis() {
 
           })
       }
+
+      axios.get(
+        `${API_URL}/rooms/`,
+        config
+      )
+      .then(resp => {setRooms(resp.data.rooms)}
+      )     
       getRentalCard()
       
-    }, [dispatch]);
-
-    const newRentalCard = () => {
-      const n = rentals.map(rental => {
-        const user = users.filter(user => user._id === rental.booker)
-        const bill = bills.filter(bill => bill.rentalCard === rental._id)
-        return {...rental, user, bill}
-      })
-      setRentals(n)
-      
-    }
+    }, [dispatch, type]);
 
         //search
         const [searchText, setSearchText] = useState('');
@@ -193,8 +216,6 @@ function BookingHis() {
             //   text
             // ),
         });
-    
-        
         //end search
 
     const columnsRental = [
@@ -206,11 +227,21 @@ function BookingHis() {
         ...getColumnSearchProps('_id')
       },
       {
+        title: "Khách hàng",
+        key: "kh",
+        width: "10%",
+        render: (_, record) => {
+          const user = users.filter(us => us._id === record.user)
+          const billUser = bills.filter(bill => bill.rentalCard === record._id)
+          return user[0] && user[0].fullname || billUser[0] && billUser[0].paymentResult.name
+        }
+      },
+      {
         title: "Ngày nhận phòng",
         dataIndex: "checkInDate",
         key: "checkInDate",
         width: "20%",
-        ...getColumnSearchProps('checkInDate'),
+        // ...getColumnSearchProps('checkInDate'),
         render: (_, record) => {
           return formatDate(record.arrivalDate);
         },
@@ -221,17 +252,94 @@ function BookingHis() {
         key: "isCheckIn",
         width: "15%",
         render: (_, record) => {
+          const billUser = bills.filter(bill => bill.rentalCard === record._id)
+          const user = users.filter(us => us._id === record.user)
+          const room = rooms.filter(room => room._id === record.room)
+                      
+          
           if(!record.isCheckIn)
             return (
-                <Button 
-                  type="primary" warning
-                  onClick={() => {
-                    CheckIn(record._id)
-                  }}  
-                >
-                  <i className="fas fa-xmark me-2"></i>
-                  Check-in
-                </Button>
+              <>
+              {contextHolder}
+              <div className={record.isPaid ? "text-center" : ""} style={{ display: "inline" }}>
+                  <Button
+                      variant="dark"
+                      type="primary" warning
+                      onClick={() => {
+                          setShow({ ["show_" + record._id]: true });
+                      }}
+                  >
+                      Check-in
+                  </Button>
+              </div>
+
+              <Modal
+                  show={show["show_" + record._id]}
+                  onHide={() => setShow({ ["show_" + record._id]: false })}
+                  aria-labelledby="contained-modal-title-vcenter"
+                  centered
+              >
+                  <Modal.Header closeButton>
+                      <Modal.Title>Chi tiết hóa đơn</Modal.Title>
+                  </Modal.Header>
+                  <Modal.Body>
+                      <h4 style={{ fontSize: "20px" }}>Thông tin khách hàng:</h4>
+                      <p style={{ fontSize: "15px" , paddingLeft:"20px"}}>
+                          <strong>Số căn cước công dân:</strong> {user[0].cccd}
+                      </p>
+                      <p style={{ fontSize: "15px" , paddingLeft:"20px"}}>
+                          <strong>Họ tên khách hàng:</strong> {user[0].fullname}
+                      </p>
+                      <h4 style={{ fontSize: "20px" }}>Thông tin đặt phòng:</h4>
+                      <p style={{ fontSize: "15px" , paddingLeft:"20px"}}>
+                          <strong>Ngày check-in:</strong> {formatDate(record.arrivalDate)}
+                      </p>
+                      <p style={{ fontSize: "15px" , paddingLeft:"20px"}}>
+                          <strong>Số ngày thuê phòng:</strong> {record.numDays}
+                      </p>
+                      <p style={{ fontSize: "15px", paddingLeft:"20px" }}>
+                          <strong>Tổng tiền:</strong> {billUser[0].totalPrice}
+                      </p>
+                      <p style={{ fontSize: "15px", paddingLeft:"20px" }}>
+                          <strong>Tình trạng thanh toán:</strong> {billUser[0].isPaid?"Đã thanh toán":"Chưa thanh toán"}
+                      </p>
+                      <h4 style={{ fontSize: "20px" }}>Thông tin phòng:</h4>
+                      <p style={{ fontSize: "15px", paddingLeft:"20px" }}>
+                          <strong>Số phòng:</strong> {room[0] && room[0].name}
+                      </p>
+                      <p style={{ fontSize: "15px", paddingLeft:"20px" }}>
+                          <strong>Loại phòng:</strong> {room[0] && room[0].type}
+                      </p>
+                      <p style={{ fontSize: "15px", paddingLeft:"20px" }}>
+                          <strong>Sức chứa:</strong> {room[0] && room[0].capacity}
+                      </p>
+                      
+                  </Modal.Body>
+                  <Modal.Footer>
+                      {!billUser[0].isPaid &&<Button 
+                        variant="secondary" 
+                        onClick={() => {
+                          updateBill(billUser[0]._id, record._id)
+                        }}
+                      >
+                          Thanh toán
+                      </Button>}
+                      <Button 
+                        variant="dark"
+                        type="primary" warning
+                        onClick={() => {
+                          if(billUser[0].isPaid)
+                            CheckIn(record._id)
+                          else openNotification()
+                        }}
+                      >
+                          Check-in
+                      </Button>
+                      
+                  </Modal.Footer>
+              </Modal>
+
+          </>
             );
           else return ("Đã check-in")
         },
@@ -259,20 +367,6 @@ function BookingHis() {
           else return "Đã check-out"
         },
       },
-      {
-        width: "10%",
-        render: (_, record) => {
-          if(!record.isCheckIn)
-            return (
-                <Button type="dark" danger>
-                  <i className="fas fa-xmark me-2"></i>
-                  Cập nhật thông tin
-                </Button>
-            );
-          else if(!record.isCheckIn)
-              return ""
-        },
-      },
   ];
 
     return (
@@ -291,6 +385,13 @@ function BookingHis() {
                     Thêm đơn đặt phòng
                 </Link>
             </div>
+            <Segmented 
+              options={title} 
+              value={type} 
+              onChange={setType} 
+              size="large" 
+            />
+            
 
             {rentals.length < 0 && (
                 <div className="d-flex align-items-center gap-2 mb-4 mt-3 text-success">
@@ -298,11 +399,11 @@ function BookingHis() {
                 </div>
             )}
             <Table
-            pagination={{ pageSize: 10, showSizeChanger: false }}
-            dataSource={rentals}
-            columns={columnsRental}
-            key="rentals"
-        />
+                pagination={{ pageSize: 6, showSizeChanger: false }}
+                dataSource={rentals}
+                columns={columnsRental}
+                key="rentals"
+            />
 
         </div>
     );

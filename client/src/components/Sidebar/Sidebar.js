@@ -18,12 +18,7 @@ function Sidebar() {
             id: 2,
             name: "Xem đơn đặt phòng",
             path: config.routes.viewRental,
-        },
-        {
-            id: 3,
-            name: "Chỉnh đơn đặt phòng",
-            path: config.routes.editRental,
-        },
+        }
     ];
 
     const roomManagamentList = [

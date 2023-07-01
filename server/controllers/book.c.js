@@ -253,9 +253,32 @@ class bookController {
         }
     }
 
+    async updateBillByEmp(req, res) {
+        try {
+            const id = req.body.id;
+            const rentalUpdate = await Bill.updateOne(
+                { _id: id },
+                {  isPaid: true, paidAt: new Date() }
+            );
+            const updateBill = await Bill.findById(id);
+
+            if (updateBill)
+                return res.json({
+                    success: true,
+                    updateBill,
+                });
+        } catch (error) {
+            console.log(error);
+            res.status(500).json({
+                success: false,
+                message: "Internal server error",
+            });
+        }
+    }
+
     async getRentalCardCheckIn(req, res) {
         try {
-            const rentalCard = await RentalCard.find({ isCheckOut: false });
+            const rentalCard = await RentalCard.find({ isCheckOut: false, status: true, });
             const bill = await Bill.find();
             const users = await User.find();
 
@@ -349,6 +372,70 @@ class bookController {
             } else {
                 res.json({ isDuplicate: false });
             }
+        } catch (error) {
+            console.log(error);
+            res.status(500).json({
+                success: false,
+                message: "Internal server error",
+            });
+        }
+    }
+
+    async getRentalCardCheckInToday(req, res) {
+        try {
+            const today = new Date();
+            const startOfToday = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+            const endOfToday = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1);
+            const rentalCard = await RentalCard.find({ 
+                isCheckIn: false,
+                status: true,
+                arrivalDate: {
+                    $gte: startOfToday,
+                    $lt: endOfToday
+                } 
+            });
+            
+            const bill = await Bill.find();
+            const users = await User.find();
+
+            return res.json({
+                success: true,
+                rentalCard,
+                bill,
+                users,
+            });
+        } catch (error) {
+            console.log(error);
+            res.status(500).json({
+                success: false,
+                message: "Internal server error",
+            });
+        }
+    }
+
+    async getRentalCardCheckOut(req, res) {
+        try {
+            const today = new Date();
+            const startOfToday = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+            const endOfToday = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1);
+            const rentalCard = await RentalCard.find({ 
+                isCheckIn: true,
+                isCheckOut: false,
+                status: true,
+                arrivalDate: {
+                    $gte: startOfToday,
+                } 
+            });
+            
+            const bill = await Bill.find();
+            const users = await User.find();
+
+            return res.json({
+                success: true,
+                rentalCard,
+                bill,
+                users,
+            });
         } catch (error) {
             console.log(error);
             res.status(500).json({

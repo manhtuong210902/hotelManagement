@@ -7,7 +7,6 @@ import {
     getRentalCardsActive,
     getRentalCardsCanceled,
     cancelRentalCard,
-    getUserName,
 } from "../../redux/bookingApi";
 import { useDispatch, useSelector } from "react-redux";
 import { Modal } from "react-bootstrap";
