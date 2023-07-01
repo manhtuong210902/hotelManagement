@@ -116,7 +116,6 @@ const BookingByHotel = () => {
                     ref={searchRef}
                     name="search-ref"
                     onFinish={onSearch}
-                    className="d-flex align-items-center"
                     style={{
                         maxWidth: 600,
                     }}
@@ -153,7 +152,7 @@ const BookingByHotel = () => {
                             {">"} Sức chứa: {searchResult.capacity}
                         </p>
                         <p className="mb-2">
-                            {">"} Giá: {searchResult.price}
+                            {">"} Giá: {searchResult.price.toLocaleString("vi")} VNĐ
                         </p>
                         <Form
                             {...layout}
