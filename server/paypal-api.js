@@ -4,8 +4,8 @@ const fetch = require("node-fetch");
 const base = "https://api-m.sandbox.paypal.com";
 
 const   generateAccessToken = async () => {
-  // const auth = Buffer.from("AWO48qyUitVQoS7Y_3Uiw4tnqzm5rpyDBcoO-AVJFDjXbIFZuWXZ-hZgPNpD9XuwU_KaTNXg-6rmrWnS" + ":" + "EGwmRbr6uelc8S_LCXsmPi7afTegKJjqQQxRl7N-Nt4bxhqtMMuEC0iM7M2EJB9UrQH9RCeRIPvnv5Z_").toString("base64");
-  const auth = Buffer.from(process.env.CLIENT_ID + ":" + process.env.APP_SECRET).toString("base64");
+  const auth = Buffer.from("AWO48qyUitVQoS7Y_3Uiw4tnqzm5rpyDBcoO-AVJFDjXbIFZuWXZ-hZgPNpD9XuwU_KaTNXg-6rmrWnS" + ":" + "EGwmRbr6uelc8S_LCXsmPi7afTegKJjqQQxRl7N-Nt4bxhqtMMuEC0iM7M2EJB9UrQH9RCeRIPvnv5Z_").toString("base64");
+  // const auth = Buffer.from(process.env.CLIENT_ID + ":" + process.env.APP_SECRET).toString("base64");
   
   const response = await fetch(`${base}/v1/oauth2/token`, {
     method: "post",

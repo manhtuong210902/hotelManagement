@@ -349,7 +349,7 @@ class bookController {
     async checkBooking(req, res) {
         try {
             let { arrivalDate, numDays, roomId } = req.body;
-
+            
             arrivalDate = new Date(arrivalDate);
             const endDate = new Date(arrivalDate);
             endDate.setDate(endDate.getDate() + numDays);
@@ -359,7 +359,7 @@ class bookController {
             });
 
             if (!existingBooking) {
-                res.json({ isDuplicate: false });
+                return res.json({ isDuplicate: false });
             }
 
             const exitArrivalDate = new Date(existingBooking.arrivalDate);
@@ -373,13 +373,13 @@ class bookController {
                 (arrivalDate >= exitArrivalDate && arrivalDate <= exitEndDate) ||
                 (endDate >= exitArrivalDate && endDate <= exitEndDate)
             ) {
-                res.json({ isDuplicate: true });
+                return res.json({ isDuplicate: true });
             } else {
-                res.json({ isDuplicate: false });
+                return res.json({ isDuplicate: false });
             }
         } catch (error) {
             console.log(error);
-            res.status(500).json({
+            return res.status(500).json({
                 success: false,
                 message: "Internal server error",
             });
