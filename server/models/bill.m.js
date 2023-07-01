@@ -31,6 +31,7 @@ const BillSchema = new Schema(
             status: { type: String },
             email_address: { type: String },
             name: { type: String },
+            cccd: { type: String },
         },
         isPaid: {
             type: Boolean,

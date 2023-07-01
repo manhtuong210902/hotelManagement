@@ -9,12 +9,14 @@ import { Button, Input, Space, Table, notification, Segmented } from "antd";
 import { Search } from "react-bootstrap-icons";
 import { Modal } from "react-bootstrap";
 
-function BookingHis() {
+const BookingHis = () => {
     const [rentals, setRentals] = useState([]);
     const [bills, setBills] = useState([]);
     const [users, setUsers] = useState([]);
     const [rooms, setRooms] = useState([]);
     const [show, setShow] = useState(false);
+    const [showDetail, setShowDetail] = useState(false);
+
     const [type, setType] = useState("Tất cả");
     const [api, contextHolder] = notification.useNotification();
     const title = ["Tất cả", "Nhận phòng hôm nay", "Đã nhận phòng"];
@@ -191,233 +193,232 @@ function BookingHis() {
     //end search
 
     const columnsRental = [
-        {
-            title: "Mã phiếu đặt phòng",
-            dataIndex: "_id",
-            key: "_id",
-            width: "10%",
-            ...getColumnSearchProps("_id"),
+      {
+        title: "Mã phiếu đặt phòng",
+        dataIndex: "_id",
+        key: "_id",
+        width: "10%",
+        ...getColumnSearchProps('_id')
+      },
+      {
+        title: "Phòng",
+        key: "ph",
+        width: "5%",
+        render: (_, record) => {
+          const room = rooms.filter(room => room._id === record.room)
+          return room[0].number
+        }
+      },
+      {
+        title: "Khách hàng",
+        key: "kh",
+        width: "15%",
+        render: (_, record) => {
+          const user = users.filter(us => us._id === record.user)
+          const billUser = bills.filter(bill => bill.rentalCard === record._id)
+          return user[0] && user[0].fullname || billUser[0] && billUser[0].paymentResult.name
+        }
+      },
+      {
+        title: "Ngày nhận phòng",
+        dataIndex: "checkInDate",
+        key: "checkInDate",
+        width: "10%",
+        // ...getColumnSearchProps('checkInDate'),
+        render: (_, record) => {
+          return formatDate(record.arrivalDate);
         },
-        {
-            title: "Phòng",
-            key: "ph",
-            width: "10%",
-            render: (_, record) => {
-                const room = rooms.filter((room) => room._id === record.room);
-                return room[0].number;
-            },
-        },
-        {
-            title: "Khách hàng",
-            key: "kh",
-            width: "15%",
-            render: (_, record) => {
-                const user = users.filter((us) => us._id === record.user);
-                const billUser = bills.filter((bill) => bill.rentalCard === record._id);
-                return (user[0] && user[0].fullname) || (billUser[0] && billUser[0].paymentResult.name);
-            },
-        },
-        {
-            title: "Ngày nhận phòng",
-            dataIndex: "checkInDate",
-            key: "checkInDate",
-            width: "15%",
-            // ...getColumnSearchProps('checkInDate'),
-            render: (_, record) => {
-                return formatDate(record.arrivalDate);
-            },
-        },
-        {
-            title: "Check-in",
-            dataIndex: "isCheckIn",
-            key: "isCheckIn",
-            width: "15%",
-            render: (_, record) => {
-                const billUser = bills.filter((bill) => bill.rentalCard === record._id);
-                const user = users.filter((us) => us._id === record.user);
-                const room = rooms.filter((room) => room._id === record.room);
+      },
+      {
+        title: "Check-in",
+        dataIndex: "isCheckIn",
+        key: "isCheckIn",
+        width: "10%",
+        render: (_, record) => {
+          const billUser = bills.filter(bill => bill.rentalCard === record._id)
+          const user = users.filter(us => us._id === record.user)
+          const room = rooms.filter(room => room._id === record.room)
+                      
+          
+          if(!record.isCheckIn)
+            return (
+              <>
+              {contextHolder}
+              <div className={record.isPaid ? "text-center" : ""} style={{ display: "inline" }}>
+                  <Button
+                      variant="dark"
+                      type="primary" warning
+                      onClick={() => {
+                          setShow({ ["show_" + record._id]: true });
+                      }}
+                  >
+                      Check-in
+                  </Button>
+              </div>
 
-                if (!record.isCheckIn)
-                    return (
-                        <>
-                            {contextHolder}
-                            <div className={record.isPaid ? "text-center" : ""} style={{ display: "inline" }}>
-                                <Button
-                                    variant="dark"
-                                    type="primary"
-                                    warning
-                                    onClick={() => {
-                                        setShow({ ["show_" + record._id]: true });
-                                    }}
-                                >
-                                    Check-in
-                                </Button>
-                            </div>
+              <Modal
+                  show={show["show_" + record._id]}
+                  onHide={() => setShow({ ["show_" + record._id]: false })}
+                  aria-labelledby="contained-modal-title-vcenter"
+                  centered
+              >
+                  <Modal.Header closeButton>
+                      <Modal.Title>Chi tiết hóa đơn</Modal.Title>
+                  </Modal.Header>
+                  <Modal.Body>
+                      <h4 style={{ fontSize: "20px" }}>Thông tin khách hàng:</h4>
+                      <p style={{ fontSize: "15px" , paddingLeft:"20px"}}>
+                          <strong>Số căn cước công dân:</strong> {user[0].cccd}
+                      </p>
+                      <p style={{ fontSize: "15px" , paddingLeft:"20px"}}>
+                          <strong>Họ tên khách hàng:</strong> {user[0].fullname}
+                      </p>
+                      <h4 style={{ fontSize: "20px" }}>Thông tin đặt phòng:</h4>
+                      <p style={{ fontSize: "15px" , paddingLeft:"20px"}}>
+                          <strong>Ngày check-in:</strong> {formatDate(record.arrivalDate)}
+                      </p>
+                      <p style={{ fontSize: "15px" , paddingLeft:"20px"}}>
+                          <strong>Số ngày thuê phòng:</strong> {record.numDays}
+                      </p>
+                      <p style={{ fontSize: "15px", paddingLeft:"20px" }}>
+                          <strong>Tổng tiền:</strong> {billUser[0].totalPrice}
+                      </p>
+                      <p style={{ fontSize: "15px", paddingLeft:"20px" }}>
+                          <strong>Tình trạng thanh toán:</strong> {billUser[0].isPaid?"Đã thanh toán":"Chưa thanh toán"}
+                      </p>
+                      <h4 style={{ fontSize: "20px" }}>Thông tin phòng:</h4>
+                      <p style={{ fontSize: "15px", paddingLeft:"20px" }}>
+                          <strong>Số phòng:</strong> {room[0] && room[0].name}
+                      </p>
+                      <p style={{ fontSize: "15px", paddingLeft:"20px" }}>
+                          <strong>Loại phòng:</strong> {room[0] && room[0].type}
+                      </p>
+                      <p style={{ fontSize: "15px", paddingLeft:"20px" }}>
+                          <strong>Sức chứa:</strong> {room[0] && room[0].capacity}
+                      </p>
+                      
+                  </Modal.Body>
+                  <Modal.Footer>
+                      {!billUser[0].isPaid &&<Button 
+                        variant="secondary" 
+                        onClick={() => {
+                          updateBill(billUser[0]._id, record._id)
+                        }}
+                      >
+                          Thanh toán
+                      </Button>}
+                      <Button 
+                        variant="dark"
+                        type="primary" warning
+                        onClick={() => {
+                          if(billUser[0].isPaid)
+                            CheckIn(record._id)
+                          else openNotification(`Khách hàng chưa thanh toán`)
+                        }}
+                      >
+                          Check-in
+                      </Button>
+                      
+                  </Modal.Footer>
+              </Modal>
 
-                            <Modal
-                                show={show["show_" + record._id]}
-                                onHide={() => setShow({ ["show_" + record._id]: false })}
-                                aria-labelledby="contained-modal-title-vcenter"
-                                centered
-                            >
-                                <Modal.Header closeButton>
-                                    <Modal.Title>Chi tiết hóa đơn</Modal.Title>
-                                </Modal.Header>
-                                <Modal.Body>
-                                    <h4 style={{ fontSize: "20px" }}>Thông tin khách hàng:</h4>
-                                    <p style={{ fontSize: "15px", paddingLeft: "20px" }}>
-                                        <strong>Số căn cước công dân:</strong> {user[0].cccd}
-                                    </p>
-                                    <p style={{ fontSize: "15px", paddingLeft: "20px" }}>
-                                        <strong>Họ tên khách hàng:</strong> {user[0].fullname}
-                                    </p>
-                                    <h4 style={{ fontSize: "20px" }}>Thông tin đặt phòng:</h4>
-                                    <p style={{ fontSize: "15px", paddingLeft: "20px" }}>
-                                        <strong>Ngày check-in:</strong> {formatDate(record.arrivalDate)}
-                                    </p>
-                                    <p style={{ fontSize: "15px", paddingLeft: "20px" }}>
-                                        <strong>Số ngày thuê phòng:</strong> {record.numDays}
-                                    </p>
-                                    <p style={{ fontSize: "15px", paddingLeft: "20px" }}>
-                                        <strong>Tổng tiền:</strong> {billUser[0].totalPrice}
-                                    </p>
-                                    <p style={{ fontSize: "15px", paddingLeft: "20px" }}>
-                                        <strong>Tình trạng thanh toán:</strong>{" "}
-                                        {billUser[0].isPaid ? "Đã thanh toán" : "Chưa thanh toán"}
-                                    </p>
-                                    <h4 style={{ fontSize: "20px" }}>Thông tin phòng:</h4>
-                                    <p style={{ fontSize: "15px", paddingLeft: "20px" }}>
-                                        <strong>Số phòng:</strong> {room[0] && room[0].number}
-                                    </p>
-                                    <p style={{ fontSize: "15px", paddingLeft: "20px" }}>
-                                        <strong>Loại phòng:</strong> {room[0] && room[0].type}
-                                    </p>
-                                    <p style={{ fontSize: "15px", paddingLeft: "20px" }}>
-                                        <strong>Sức chứa:</strong> {room[0] && room[0].capacity}
-                                    </p>
-                                </Modal.Body>
-                                <Modal.Footer>
-                                    {!billUser[0].isPaid && (
-                                        <Button
-                                            variant="secondary"
-                                            onClick={() => {
-                                                updateBill(billUser[0]._id, record._id);
-                                            }}
-                                        >
-                                            Thanh toán
-                                        </Button>
-                                    )}
-                                    <Button
-                                        variant="dark"
-                                        type="primary"
-                                        warning
-                                        onClick={() => {
-                                            if (billUser[0].isPaid) CheckIn(record._id);
-                                            else openNotification();
-                                        }}
-                                    >
-                                        Check-in
-                                    </Button>
-                                </Modal.Footer>
-                            </Modal>
-                        </>
-                    );
-                else return "Đã check-in";
-            },
+          </>
+            );
+          else return ("Đã check-in")
         },
-        {
-            title: "Check-out",
-            dataIndex: "isCheckOut",
-            key: "isCheckOut",
-            width: "15%",
-            render: (_, record) => {
-                if (!record.isCheckOut && record.isCheckIn)
-                    return (
-                        <Button
-                            type="primary"
-                            danger
-                            onClick={() => {
-                                CheckOut(record._id);
-                            }}
-                        >
-                            <i className="fas fa-xmark me-2"></i>
-                            Check-out
-                        </Button>
-                    );
-                else if (!record.isCheckIn) return "";
-                else return "Đã check-out";
-            },
+      },
+      {
+        title: "Check-out",
+        dataIndex: "isCheckOut",
+        key: "isCheckOut",
+        width: "10%",
+        render: (_, record) => {
+          if(!record.isCheckOut && record.isCheckIn)
+            return (
+                <Button 
+                  type="primary" danger
+                  onClick={() => {
+                    CheckOut(record._id)
+                  }}  
+                >
+                  <i className="fas fa-xmark me-2"></i>
+                  Check-out
+                </Button>
+            );
+          else if(!record.isCheckIn)
+              return ""
+          else return "Đã check-out"
         },
-        {
-            title: "",
-            dataIndex: "isCheckIn",
-            key: "isCheckIn",
-            width: "15%",
-            render: (_, record) => {
-                const billUser = bills.filter((bill) => bill.rentalCard === record._id);
-                const user = users.filter((us) => us._id === record.user);
-                const room = rooms.filter((room) => room._id === record.room);
-                return (
-                    <>
-                        <div className={record.isPaid ? "text-center" : ""} style={{ display: "inline" }}>
-                            <Button
-                                onClick={() => {
-                                    setShow({ ["show_" + record._id]: true });
-                                }}
-                            >
-                                Thông tin chi tiết
-                            </Button>
-                        </div>
+      },
+      {
+        title: "",
+        dataIndex: "isCheckIn",
+        key: "isCheckIn",
+        width: "15%",
+        render: (_, record) => {
+          const billUser = bills.filter(bill => bill.rentalCard === record._id)
+          const user = users.filter(us => us._id === record.user)
+          const room = rooms.filter(room => room._id === record.room)
+          return (
+              <>
+              <div className={record.isPaid ? "text-center" : ""} style={{ display: "inline" }}>
+                  <Button
+                      onClick={() => {
+                        setShowDetail({ ["show_" + record._id]: true });
+                      }}
+                  >
+                      Thông tin chi tiết
+                  </Button>
+              </div>
 
-                        <Modal
-                            show={show["show_" + record._id]}
-                            onHide={() => setShow({ ["show_" + record._id]: false })}
-                            aria-labelledby="contained-modal-title-vcenter"
-                            centered
-                        >
-                            <Modal.Header closeButton>
-                                <Modal.Title>Chi tiết hóa đơn</Modal.Title>
-                            </Modal.Header>
-                            <Modal.Body>
-                                <h4 style={{ fontSize: "20px" }}>Thông tin khách hàng:</h4>
-                                <p style={{ fontSize: "15px", paddingLeft: "20px" }}>
-                                    <strong>Số căn cước công dân:</strong>{" "}
-                                    {(user[0] && user[0].cccd) || (billUser[0] && billUser[0].paymentResult.cccd)}
-                                </p>
-                                <p style={{ fontSize: "15px", paddingLeft: "20px" }}>
-                                    <strong>Họ tên khách hàng:</strong>{" "}
-                                    {(user[0] && user[0].fullname) || (billUser[0] && billUser[0].paymentResult.name)}
-                                </p>
-                                <h4 style={{ fontSize: "20px" }}>Thông tin đặt phòng:</h4>
-                                <p style={{ fontSize: "15px", paddingLeft: "20px" }}>
-                                    <strong>Ngày check-in:</strong> {formatDate(record.arrivalDate)}
-                                </p>
-                                <p style={{ fontSize: "15px", paddingLeft: "20px" }}>
-                                    <strong>Số ngày thuê phòng:</strong> {record.numDays}
-                                </p>
-                                <p style={{ fontSize: "15px", paddingLeft: "20px" }}>
-                                    <strong>Tổng tiền:</strong> {billUser[0].totalPrice}
-                                </p>
-                                <p style={{ fontSize: "15px", paddingLeft: "20px" }}>
-                                    <strong>Tình trạng thanh toán:</strong>{" "}
-                                    {billUser[0].isPaid ? "Đã thanh toán" : "Chưa thanh toán"}
-                                </p>
-                                <h4 style={{ fontSize: "20px" }}>Thông tin phòng:</h4>
-                                <p style={{ fontSize: "15px", paddingLeft: "20px" }}>
-                                    <strong>Số phòng:</strong> {room[0] && room[0].number}
-                                </p>
-                                <p style={{ fontSize: "15px", paddingLeft: "20px" }}>
-                                    <strong>Loại phòng:</strong> {room[0] && room[0].type}
-                                </p>
-                                <p style={{ fontSize: "15px", paddingLeft: "20px" }}>
-                                    <strong>Sức chứa:</strong> {room[0] && room[0].capacity}
-                                </p>
-                            </Modal.Body>
-                        </Modal>
-                    </>
-                );
+              <Modal
+                  show={showDetail["show_" + record._id]}
+                  onHide={() => setShowDetail({ ["show_" + record._id]: false })}
+                  aria-labelledby="contained-modal-title-vcenter"
+                  centered
+              >
+                  <Modal.Header closeButton>
+                      <Modal.Title>Chi tiết hóa đơn</Modal.Title>
+                  </Modal.Header>
+                  <Modal.Body>
+                      <h4 style={{ fontSize: "20px" }}>Thông tin khách hàng:</h4>
+                      <p style={{ fontSize: "15px" , paddingLeft:"20px"}}>
+                          <strong>Số căn cước công dân:</strong> {user[0] && user[0].cccd || billUser[0] && billUser[0].paymentResult.cccd}
+                      </p>
+                      <p style={{ fontSize: "15px" , paddingLeft:"20px"}}>
+                          <strong>Họ tên khách hàng:</strong> {user[0] && user[0].fullname || billUser[0] && billUser[0].paymentResult.name}
+                      </p>
+                      <h4 style={{ fontSize: "20px" }}>Thông tin đặt phòng:</h4>
+                      <p style={{ fontSize: "15px" , paddingLeft:"20px"}}>
+                          <strong>Ngày check-in:</strong> {formatDate(record.arrivalDate)}
+                      </p>
+                      <p style={{ fontSize: "15px" , paddingLeft:"20px"}}>
+                          <strong>Số ngày thuê phòng:</strong> {record.numDays}
+                      </p>
+                      <p style={{ fontSize: "15px", paddingLeft:"20px" }}>
+                          <strong>Tổng tiền:</strong> {billUser[0].totalPrice}
+                      </p>
+                      <p style={{ fontSize: "15px", paddingLeft:"20px" }}>
+                          <strong>Tình trạng thanh toán:</strong> {billUser[0].isPaid?"Đã thanh toán":"Chưa thanh toán"}
+                      </p>
+                      <h4 style={{ fontSize: "20px" }}>Thông tin phòng:</h4>
+                      <p style={{ fontSize: "15px", paddingLeft:"20px" }}>
+                          <strong>Số phòng:</strong> {room[0] && room[0].name}
+                      </p>
+                      <p style={{ fontSize: "15px", paddingLeft:"20px" }}>
+                          <strong>Loại phòng:</strong> {room[0] && room[0].type}
+                      </p>
+                      <p style={{ fontSize: "15px", paddingLeft:"20px" }}>
+                          <strong>Sức chứa:</strong> {room[0] && room[0].capacity}
+                      </p>
+                      
+                  </Modal.Body>
+              </Modal>
+
+              </>
+            )
             },
-        },
+      },
     ];
 
     return (
@@ -453,4 +454,4 @@ function BookingHis() {
     );
 }
 
-export default BookingHis;
+export default BookingHis
