@@ -11,19 +11,20 @@ function ChatCus({ setShowPopup }) {
     const user = useSelector((state) => state.auth.user);
     const [text, setText] = useState("");
     const [messages, setMessages] = useState([]);
-
+    console.log('chat');
+    
     useEffect(() => {
         const fetchApi = async () => {
-            const result = await axios.get(`${API_URL}/chats/messages/${user._id}`);
+            const result = await axios.get(`${API_URL}/chats/messages/${user?._id}`);
             setMessages(result.data.messages);
         };
 
         fetchApi();
-    }, [user._id]);
+    }, [user?._id]);
 
     useEffect(() => {
         const handleNewMessages = ({ userId, message }) => {
-            if (userId === user._id) {
+            if (userId === user?._id) {
                 setMessages((prev) => [...prev, message]);
             }
         };
@@ -33,7 +34,7 @@ function ChatCus({ setShowPopup }) {
         return () => {
             socket.off("message", handleNewMessages);
         };
-    }, [user._id]);
+    }, [user?._id]);
 
     const handleAddMessage = async (e) => {
         e.preventDefault();
@@ -45,8 +46,8 @@ function ChatCus({ setShowPopup }) {
         socket.emit("message", { userId: user._id, message: res.data.newMessage });
         setText("");
     };
-
     return (
+        user === null ? " ": 
         <div className="chat-customer-popup bg-white">
             <div className="gap-2 chat-customer-header bg-white text-primary">
                 <span className="d-flex align-items-center gap-2">
@@ -88,6 +89,7 @@ function ChatCus({ setShowPopup }) {
                 </button>
             </form>
         </div>
+    
     );
 }
 
