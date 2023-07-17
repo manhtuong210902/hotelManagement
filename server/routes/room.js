@@ -10,6 +10,7 @@ router.post("/add", authenToken, roomController.add);
 router.get("/search", roomController.searchRoom);
 router.get("/status", authenToken, roomController.getRoomsWithVacantStatus);
 router.get("/:id", roomController.getById);
+router.get("/getCheckOut", authenToken, roomController.hasCheckedOut);
 
 router.delete("/:id", authenToken, roomController.delete);
 router.put("/:id", authenToken, roomController.update);

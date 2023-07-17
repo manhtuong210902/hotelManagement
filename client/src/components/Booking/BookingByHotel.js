@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button, Form, Input, InputNumber, DatePicker } from "antd";
+import { Button, Form, Input, InputNumber, notification } from "antd";
 import { Card, Col } from "react-bootstrap";
 import axios from "axios";
 import { API_URL } from "../../utils/constants";
@@ -38,21 +38,38 @@ const BookingByHotel = () => {
         isPaid: true,
         paidAt: new Date(),
     });
+    const [api, contextHolder] = notification.useNotification();
+
+    const openNotification = (message) => {
+        api.info({
+            message,
+        });
+    };
 
     const handleBooking = async () => {
-        createRentalCard(dispatch, rentalCard).then((newRental) => {
-            setBill({ ...bill, rentalCard: newRental._id });
-            const Bill = { ...bill, number: rentalCard.numDays, rentalCard: newRental._id, bill_rental: [newRental] };
+        if (searchResult.number === "" && search === "") {
+            openNotification("Chưa chọn phòng");
+            return;
+        } else {
+            await createRentalCard(dispatch, rentalCard).then((newRental) => {
+                setBill({ ...bill, rentalCard: newRental?._id });
+                const Bill = {
+                    ...bill,
+                    number: rentalCard.numDays,
+                    rentalCard: newRental._id,
+                    bill_rental: [newRental],
+                };
 
-            createBill(dispatch, Bill).then((success) => {
-                if (success) {
-                    navigate("/view-rental");
-                } else {
-                    //xoa rental card + show error
-                    console.log("err");
-                }
+                createBill(dispatch, Bill).then((success) => {
+                    if (success) {
+                        navigate("/view-rental");
+                    } else {
+                        //xoa rental card + show error
+                        console.log("err");
+                    }
+                });
             });
-        });
+        }
     };
 
     const layout = {
@@ -82,7 +99,7 @@ const BookingByHotel = () => {
         setRentalCard({
             ...rentalCard,
             room: searchResult._id,
-            arrivalDate: new Date(values.arrivalDay),
+            arrivalDate: new Date(),
             numDays: values.numDays,
         });
         setIsCheckOut(searchResult.price * values.numDays + (searchResult.price * 10) / 100);
@@ -120,6 +137,7 @@ const BookingByHotel = () => {
 
     return (
         <div>
+            {contextHolder}
             <div className="search">
                 <Form
                     {...layout}
@@ -207,17 +225,17 @@ const BookingByHotel = () => {
                                 >
                                     <Input />
                                 </Form.Item>
-                                <Form.Item
-                                    name="arrivalDay"
-                                    label="Ngày check-in:"
-                                    rules={[
-                                        {
-                                            required: true,
-                                        },
-                                    ]}
-                                >
-                                    <DatePicker />
-                                </Form.Item>
+                                {/* <Form.Item
+                                name="arrivalDay"
+                                label="Ngày check-in:"
+                                rules={[
+                                    {
+                                        required: true,
+                                    },
+                                ]}
+                            >
+                                <DatePicker />
+                            </Form.Item> */}
                                 <Form.Item
                                     name="numDays"
                                     label="Số ngày ở:"
@@ -232,7 +250,7 @@ const BookingByHotel = () => {
                                 {isCheckOut && (
                                     <>
                                         <p className="mb-2">
-                                            {">"} Tổng hóa đơn: {isCheckOut}
+                                            {">"} Tổng hóa đơn: {isCheckOut.toLocaleString("vi")} VNĐ
                                         </p>
                                     </>
                                 )}

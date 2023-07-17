@@ -24,6 +24,7 @@ function Review({ roomId }) {
                 console.log(result.data.reviews);
                 setReviews(result.data.reviews);
             }
+            //
             setLoading(false);
         };
         fetchApi();

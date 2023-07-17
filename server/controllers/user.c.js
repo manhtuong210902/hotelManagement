@@ -3,6 +3,10 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/user.m");
 const chat = require("../models/chat.m");
 const Message = require("../models/message.m");
+const Review = require("../models/review.m");
+const RentalCard = require("../models/rentalCard.m");
+const Bill = require("../models/bill.m");
+
 const { ObjectId } = require("mongodb");
 
 class userController {
@@ -182,19 +186,6 @@ class userController {
             newUser.roles.push("Manager");
             await newUser.save();
 
-            const newMessage = new Message({
-                idChat: chatUser._id,
-                content: "Chào bạn, tôi có thể giúp gì cho bạn",
-                role: true,
-            });
-
-            await newMessage.save();
-
-            chatUser.messages.push(newMessage._id);
-            chatUser.lastMessage = newMessage._id;
-
-            await chatUser.save();
-
             return res.json({
                 success: true,
                 message: "user created successfully",
@@ -212,6 +203,14 @@ class userController {
     async deleteAccount(req, res, next) {
         try {
             const deleteUser = await User.deleteOne({ _id: req.params.id });
+
+            const conver = await chat.findOneAndDelete({ customer: req.params.id });
+            await Message.deleteMany({ idChat: conver._id });
+            await Review.deleteMany({ author: req.params.id });
+            const rental = await RentalCard.findOneAndDelete({ user: req.params.id });
+
+            console.log(rental);
+            await Bill.deleteMany({ rentalCard: rental._id });
 
             return res.json({
                 success: true,

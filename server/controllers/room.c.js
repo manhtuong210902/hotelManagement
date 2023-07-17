@@ -204,6 +204,26 @@ class roomController {
             });
         }
     }
+
+    async hasCheckedOut(req, res, next) {
+        try {
+            const { roomId } = req.body;
+
+            const checkedOutCard = await RentalCard.findOne({
+                room: roomId,
+                user: req.userId,
+                isCheckOut: true,
+            });
+
+            res.json({ hasCheckedOut: !!checkedOutCard });
+        } catch (error) {
+            console.log(error);
+            res.status(500).json({
+                success: false,
+                message: "Internal server error",
+            });
+        }
+    }
 }
 
 module.exports = new roomController();
