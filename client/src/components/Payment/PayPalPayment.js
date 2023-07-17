@@ -11,11 +11,9 @@ const PayPalPayment = ({paymentInfo, bill, rentalCard, handleClose}) => {
     const navigate = useNavigate();
     const handleBooking = async (paymentRes) => {
       if(rentalCard)
-      createRentalCard(dispatch, rentalCard )
+      await createRentalCard(dispatch, rentalCard )
       .then((newRental) => 
       {
-        console.log(newRental);
-        
           const Bill = {
               ...bill, rentalCard: newRental._id, isPaid : true, paidAt: new Date(), paymentResult: {
               id: paymentRes.id,

@@ -349,8 +349,6 @@ class bookController {
     async checkBooking(req, res) {
         try {
             let { arrivalDate, numDays, roomId } = req.body;
-            console.log(arrivalDate, numDays, roomId);
-
             arrivalDate = new Date(arrivalDate);
             const endDate = new Date(arrivalDate);
             endDate.setDate(endDate.getDate() + numDays);
@@ -382,7 +380,7 @@ class bookController {
             }
         } catch (error) {
             console.log(error);
-            res.status(500).json({
+            return res.status(500).json({
                 success: false,
                 message: "Internal server error",
             });
